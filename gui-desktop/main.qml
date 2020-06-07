@@ -16,7 +16,6 @@ ApplicationWindow {
     BackEnd {
         id: _backend
     }
-
     // Components
     menuBar: MenuBar {
         id: _menubar
@@ -33,8 +32,10 @@ ApplicationWindow {
         Menu {
             title: qsTr("&Preferences");
             Action { text: qsTr("Settings"); onTriggered: _quickSettings.open()}
-            Action { text: qsTr("Theme")}
+            Action { text: qsTr("Theme"); onTriggered: palette.Highlight="#FF3333"}
         }
+
+
 
         Menu {
             title: qsTr("&View");
@@ -44,7 +45,7 @@ ApplicationWindow {
 
         Menu {
             title: qsTr("&Help")
-            Action { text: qsTr("&About") }
+            Action { text: qsTr("&About");onTriggered:{ _aboutDialog.open()} }
             Action { text: qsTr("&Send Feedback") }
             Action { text: qsTr("&Changelog") }
         }
@@ -54,11 +55,10 @@ ApplicationWindow {
     Drawer {
         id: _quickSettings
         y: _mainToolBar.height + _menubar.height
-        width: 250
+        width: 350
         height: _root.height - _menubar.height - _mainToolBar.height
 
         contentItem: QuickSettings {
-            quickTitelBarQuickSettingsColor: palette.highlight
         }
 
         enter: Transition { SmoothedAnimation { velocity: 2} }
@@ -173,6 +173,10 @@ ApplicationWindow {
             }
 
         }
+    }
+
+    AboutDialog {
+        id: _aboutDialog
     }
 
 

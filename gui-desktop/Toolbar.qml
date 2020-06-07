@@ -19,6 +19,7 @@ Rectangle {
 
         TextField{
             id: _tfDate
+            text: qsTr("")
             Layout.margins: edgeMargin
             horizontalAlignment: Text.AlignHCenter
             // Start in small position

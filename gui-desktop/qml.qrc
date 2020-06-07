@@ -4,5 +4,6 @@
         <file>qtquickcontrols2.conf</file>
         <file>Toolbar.qml</file>
         <file>QuickSettings.qml</file>
+        <file>AboutDialog.qml</file>
     </qresource>
 </RCC>
