@@ -16,14 +16,16 @@ class BackEnd : public QObject
 
   // Q_PROPERTY 's -> Create a variable that has getter & setter + emits signal when changed
   //Q_PROPERTY(double cpu READ getCpu WRITE setCpu NOTIFY cpuChanged)
-  Q_PROPERTY(QString cpu READ getCpu NOTIFY cpuChanged)
+  //Q_PROPERTY(QString cpu READ getCpu NOTIFY cpuChanged)
   Q_PROPERTY(Diary log READ getLog NOTIFY logChanged)
+  
 public:
   explicit BackEnd(QObject *parent = nullptr);
 
-  QString getCpu();
+  //QString getCpu();
   //void setCpu(const double &userName);
-
+  
+  Diary 
 signals:
   // Signals back to the GUI to update something
   void cpuChanged();

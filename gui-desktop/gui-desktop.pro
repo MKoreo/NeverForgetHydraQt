@@ -18,6 +18,7 @@ SOURCES += \
         backend.cpp \
         main.cpp \
         sysinfo.cpp
+
 linux {
     SOURCES += sysinfolinuximpl.cpp
     HEADERS += sysinfolinuximpl.h
@@ -37,14 +38,23 @@ QML_IMPORT_PATH =
 # Additional import path used to resolve QML modules just for Qt Quick Designer
 QML_DESIGNER_IMPORT_PATH =
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
     backend.h \
     sysinfo.h
+
+LIBS += -L$$OUT_PWD/../stcore/ -lstcore
+INCLUDEPATH += $$PWD/../stcore
+DEPENDPATH += $$PWD/../stcore
+
+LIBS += -L$$OUT_PWD/../stdata/ -lstdata
+INCLUDEPATH += $$PWD/../stdata
+DEPENDPATH += $$PWD/../stdata
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
 
 headersDataFiles.path = $$[QT_INSTALL_HEADERS]/MyLib/
 headersDataFiles.files = $$PWD/src/*.h

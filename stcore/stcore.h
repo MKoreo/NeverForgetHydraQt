@@ -1,6 +1,8 @@
 #ifndef STCORE_H
 #define STCORE_H
 
+
+
 class StCore
 {
 public:

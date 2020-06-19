@@ -3,6 +3,8 @@
 BackEnd::BackEnd(QObject *parent) :
     QObject(parent)
 {
+  // Create stCore and let it do things
+  // Change stuff in backend to get it to the GUI
 }
 
 QString BackEnd::getCpu()
