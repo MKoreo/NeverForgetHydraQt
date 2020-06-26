@@ -21,8 +21,8 @@ private:
   XmlParser& operator=(const XmlParser& rhs) = delete;
 
 public:
-  static QVector<QVector<QString*>*>* READXML(const QString& path);
-  static void WRITEXML(const QString& path, QVector<QVector<QString*>*>* records);
+  static void READXML(const QString& path, QVector<QVector<QString>> &xml_output);
+  static void WRITEXML(const QString &path, const QVector<QVector<QString>> &xml_input);
 };
 
 #endif // XMLPARSER_H

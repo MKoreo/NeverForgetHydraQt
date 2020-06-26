@@ -8,7 +8,7 @@ ApplicationWindow {
     id: _root
     title: "NeverForgetHydraQt"
 
-    palette.highlight: "#CC3333"
+    palette.highlight: "#17be9b"
     visible: true
     width: 900
     height: 350
@@ -21,7 +21,7 @@ ApplicationWindow {
         id: _menubar
         Menu {
             title: qsTr("&File")
-            Action { text: qsTr("&New...") }
+            Action { text: qsTr("&New..."); onTriggered: _fileDialog.open()}
             Action { text: qsTr("&Open...") }
             Action { text: qsTr("Save &As...")}
             MenuSeparator { }
@@ -112,10 +112,6 @@ ApplicationWindow {
                 Rectangle {
                     anchors.fill: parent
                     color: palette.alternateBase
-                    Label {
-                        anchors.fill: parent
-                        text: qsTr(_backend.cpu)
-                    }
                 }
             }
 
@@ -179,6 +175,9 @@ ApplicationWindow {
         id: _aboutDialog
     }
 
+    NewDialog {
+        id: _fileDialog
+    }
 
 
 }

@@ -6,6 +6,10 @@
 
 #include "backend.h"
 
+#include "costCenterNamesModel.h"
+#include "projectNamesModel.h"
+#include "subjectNamesModel.h"
+
 int main(int argc, char *argv[]) {
     // Random vars and attributes
 
@@ -20,6 +24,13 @@ int main(int argc, char *argv[]) {
 
     QGuiApplication app(argc, argv);
     qmlRegisterType<BackEnd>("io.home.essentials.backend", 1, 0, "BackEnd");
+    // Models
+    // -- Comboboxes
+    qmlRegisterType<CostCenterNamesModel>("io.home.essentials.CostCenterNamesModel", 1, 0, "CostCenterNamesModel");
+    qmlRegisterType<ProjectNamesModel>("io.home.essentials.ProjectNamesModel", 1, 0, "ProjectNamesModel");
+    qmlRegisterType<SubjectNamesModel>("io.home.essentials.SubjectNamesModel", 1, 0, "SubjectNamesModel");
+
+
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
     QObject *topLevel = engine.rootObjects().value(0);

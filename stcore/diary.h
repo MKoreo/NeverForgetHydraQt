@@ -1,13 +1,12 @@
 #ifndef DIARY_H
 #define DIARY_H
 
-#include <record.h>
-
-
-
 #include <QDateTime>
 #include <QString>
 #include <QVector>
+
+#include "diarydao.h"
+#include "record.h"
 
 class Diary
 {
@@ -19,26 +18,32 @@ public:
 
 protected:
   // Disable constructor and copy operator
-  Diary();
+  Diary(){};
   Diary& operator=(const Diary& rhs);
 
+public:
   // Creating Diary
-  void newDiary(const QString path);
-  bool loadDiary(const QString path);
-  bool saveDiary();
+  void newDiary(const QString &path);
+  bool loadDiary(const QString &path);
+  bool saveDiary(const QString &path);
 
   // Manipulating diary
-  void addRecord(const Record* rec);
+  void addRecord(Record* rec);
   bool removeRecord(const Record* rec);
 
   // checking content
-  int contains(const Record* rec) const;
-  QVector<Record*> getRecordsByDate(const QDateTime* const date) const;
-  QVector<Record*> getRecordsByDates(const QDateTime* const startDate, const QDateTime* const endDate) const;
+  Record* contains(const Record* rec) const;
+  QVector<Record*> getRecordsByDate(const QDate& date);
+  QVector<Record*> getRecordsByDates(const QDate& startDate, const QDate& endDate);
+  QVector<Record*> getRecords();
+  int count();
+
+
+
 private:
   QString m_path;
-  QVector<Record*>* m_records;
-  QVector<Record*>* m_deletedRecords;
+  QVector<Record*> m_records;
+  QVector<Record*> m_deletedRecords;
 
 };
 

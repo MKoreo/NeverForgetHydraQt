@@ -1,9 +1,12 @@
 import QtQuick 2.3
-import QtQuick.Controls 1.4
+
 import QtQuick.Controls 2.5
 import QtQuick.Controls.Universal 2.3
 import QtQuick.Layouts 1.14
 import io.home.essentials.backend 1.0
+import io.home.essentials.CostCenterNamesModel 1.0
+import io.home.essentials.SubjectNamesModel 1.0
+import io.home.essentials.ProjectNamesModel 1.0
 
 Rectangle {
 
@@ -13,6 +16,11 @@ Rectangle {
     property int unfoldedDateWidth: 110
     property int edgeMargin: 5
     anchors.fill: parent
+
+    BackEnd {
+        id: _backend
+    }
+
     RowLayout{
         id: _toolRow
         anchors.fill: parent
@@ -25,17 +33,18 @@ Rectangle {
             // Start in small position
             state: "folded"
             Layout.fillHeight: true
-
+            selectByMouse: true
 
             // Increase size if we pop calendar
             states: [
                 State {
                     name: "unfolded";
-                    PropertyChanges { text: qsTr("20-05-2020"); target: _tfDate; implicitWidth: unfoldedDateWidth }
+                    PropertyChanges { target: _tfDate; implicitWidth: unfoldedDateWidth }
+
                 },
                 State {
                     name: "folded";
-                    PropertyChanges { text: qsTr("20-05"); target: _tfDate; implicitWidth: foldedDateWidth }
+                    PropertyChanges { target: _tfDate; implicitWidth: foldedDateWidth }
                 }
             ]
 
@@ -45,7 +54,7 @@ Rectangle {
                 PropertyAnimation {  property: "text"; duration: 0; easing.type: Easing.InOutQuad }
             }
 
-            onActiveFocusChanged: if(state == "unfolded") { state = "folded"} else { state = "unfolded"}
+            onActiveFocusChanged: if(state == "unfolded") { state = "folded";  _backend.date = text; text = _backend.date.substring(0, 5)} else { state = "unfolded"; text = _backend.date}
         }
 
         SpinBox {
@@ -68,8 +77,9 @@ Rectangle {
             implicitWidth: 150
             Layout.fillHeight: true
 
-            // TBD
-            model: ["E.000363", "OPS", "EDI"]
+            model: CostCenterNamesModel {
+                id: _cbCostCenterModel
+            }
 
             // Store the previous text for restoring it if we cancel
             property string oldText
@@ -95,8 +105,14 @@ Rectangle {
                     cancelling = false
                 } else {
                     // TO DO: Handle new text
+                    //_backend.costCenter = editText
+                    if(editText != "" && editText != currentText){
+                        _cbCostCenterModel.insert(_cbCostCenter.editText);
+                    }
                 }
             }
+
+
         }
         ComboBox {
             id: _cbProject
@@ -109,8 +125,9 @@ Rectangle {
             Layout.fillHeight: true
 
             // TBD
-            model: ["Fixture Design", "USB-C Testmodule", "PMS"]
-
+            model: ProjectNamesModel {
+                id: _cbProjectModel
+            }
             // Store the previous text for restoring it if we cancel
             property string oldText
 
@@ -135,6 +152,10 @@ Rectangle {
                     cancelling = false
                 } else {
                     // TO DO: Handle new text
+                    //_backend.project = editText
+                    if(editText != "" && editText != currentText){
+                        _cbProjectModel.insert(_cbProject.editText);
+                    }
                 }
             }
         }
@@ -150,8 +171,9 @@ Rectangle {
             implicitHeight: parent.height
 
             // TBD
-            model: ["Offer quotation", "Cable list", "Wiring list"]
-
+            model: SubjectNamesModel {
+                id: _cbSubjetModel
+            }
             // Store the previous text for restoring it if we cancel
             property string oldText
 
@@ -176,6 +198,10 @@ Rectangle {
                     cancelling = false
                 } else {
                     // TO DO: Handle new text
+                    //_backend.subject = editText
+                    if(editText != "" && editText != currentText){
+                        _cbSubjetModel.insert(_cbSubject.editText);
+                    }
                 }
             }
         }
@@ -188,9 +214,16 @@ Rectangle {
             implicitHeight: parent.height
             Layout.fillHeight: true
             Layout.margins: edgeMargin
+            onClicked: {
+                _backend.costCenter = _cbCostCenter.currentText;
+                _backend.project = _cbProject.currentText;
+                _backend.subject = _cbSubject.currentText;
+                _backend.minutes = _sbTime.value;
+                _backend.date = _tfDate.text;
+                _backend.addRecord();
+            }
         }
     }
-
 }
 
 /*##^##

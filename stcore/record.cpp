@@ -6,67 +6,89 @@ Record::Record()
 }
 
 Record::Record(const QString &creationDate, const QString &recordDate, const QString &costCenter, const QString &project, const QString &subject,  const QString &minutes){
-  m_creationDate = QDateTime::fromString(creationDate,"yyyy-MM-d");
-  m_recordDate = QDateTime::fromString(recordDate,"yyyy-MM-d");
-  m_costCenter = costCenter;
-  m_project = project;
-  m_subject = subject;
-  m_minutes = minutes.toInt();
+    m_creationDate = QDate::fromString(creationDate,"yyyy-MM-d");
+    m_recordDate = QDate::fromString(recordDate,"yyyy-MM-d");
+    m_costCenter = costCenter;
+    m_project = project;
+    m_subject = subject;
+    m_minutes = minutes.toInt();
 }
 
-Record::Record(QDateTime creationDate, QDateTime recordDate, QString costCenter, QString project, QString subject, int minutes){
-  m_creationDate = creationDate;
-  m_recordDate = recordDate;
-  m_costCenter = costCenter;
-  m_project = project;
-  m_subject = subject;
-  m_minutes = minutes;
+Record::Record(QDate creationDate, QDate recordDate, QString costCenter, QString project, QString subject, int minutes){
+    m_creationDate = creationDate;
+    m_recordDate = recordDate;
+    m_costCenter = costCenter;
+    m_project = project;
+    m_subject = subject;
+    m_minutes = minutes;
 }
 
 // -- Getters & setters --
-void Record::setCreationDate(QDateTime creationDate) {
-  m_creationDate = creationDate;
+void Record::setCreationDate(QDate creationDate) {
+    m_creationDate = creationDate;
 }
-QDateTime Record::creationDate(){
-  return m_creationDate;
+QDate Record::creationDate() const{
+    return m_creationDate;
 }
 
-void Record::setRecordDate(QDateTime recordDate) {
-  m_recordDate = recordDate;
+void Record::setRecordDate(QDate recordDate) {
+    m_recordDate = recordDate;
 }
-QDateTime Record::recordDate(){
-  return m_recordDate;
+QDate Record::recordDate() const{
+    return m_recordDate;
 }
 
 void Record::setCostCenter(QString costCenter) {
-  m_costCenter = costCenter;
+    m_costCenter = costCenter;
 }
-QString Record::costCenter(){
-  return m_costCenter;
+QString Record::costCenter() const{
+    return m_costCenter;
 }
 
 void Record::setProject(QString costCenter) {
-  m_costCenter = costCenter;
+    m_costCenter = costCenter;
 }
-QString Record::project(){
-  return m_project;
+QString Record::project() const{
+    return m_project;
 }
 
 void Record::setSubject(QString subject) {
-  m_subject = subject;
+    m_subject = subject;
 }
-QString Record::subject(){
-  return m_subject;
+QString Record::subject() const{
+    return m_subject;
 }
 
-int Record::minutes() {
-  return m_minutes;
+int Record::minutes() const{
+    return m_minutes;
 }
 void Record::setMinutes(int minutes){
-  m_minutes = minutes;
+    m_minutes = minutes;
 }
 
 // -- Others --
 void Record::addMinutes(int minutes){
-  m_minutes += minutes;
+    m_minutes += minutes;
+}
+
+EqualityGrade Record::compare(const Record& rec) {
+    EqualityGrade grade = EqualityGrade::none;
+
+    if(recordDate() == rec.recordDate()){
+        grade = EqualityGrade::recordDate;
+        if(costCenter() == rec.costCenter()) {
+            grade = EqualityGrade::costCenter;
+            if (project() == rec.project()){
+                grade = EqualityGrade::project;
+                if(subject() == rec.subject()){
+                    grade = EqualityGrade::subject;
+                    if(minutes() == rec.minutes()){
+                        grade = EqualityGrade::minutes;
+                    }
+                }
+            }
+        }
+    }
+
+    return grade;
 }

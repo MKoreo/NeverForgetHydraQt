@@ -5,45 +5,53 @@
 #include <QDateTime>
 #include <QString>
 
+enum EqualityGrade {
+    none,
+    recordDate,
+    costCenter,
+    project,
+    subject,
+    minutes
+};
+
 class Record
 {
 public:
   Record();
-  Record(QDateTime creationDate, QDateTime recordDate, QString costCenter, QString project, QString subject, int minutes);
+  Record(QDate creationDate, QDate recordDate, QString costCenter, QString project, QString subject, int minutes);
   Record(const QString &creationDate, const QString &recordDate, const QString &costCenter, const QString &project, const QString &subject,  const QString &minutes);
 
   // Compare record to other record
-  bool compare(Record rec);
+  EqualityGrade compare(const Record& rec);
 
 public: // Getters - Setters
-  void setCreationDate(QDateTime creationDate);
-  QDateTime creationDate();
+  void setCreationDate(QDate creationDate);
+  QDate creationDate() const;
 
-  void setRecordDate(QDateTime recordDate);
-  QDateTime recordDate();
+  void setRecordDate(QDate recordDate);
+  QDate recordDate() const;
 
   void setCostCenter(QString costCenter);
-  QString costCenter();
+  QString costCenter() const;
 
   void setProject(QString project);
-  QString project();
+  QString project() const;
 
   void setSubject(QString subject);
-  QString subject();
+  QString subject() const;
 
   void setMinutes(int minutes);
-  int minutes();
+  int minutes() const;
 
   void addMinutes(int minutes);
 
 private:
-  QDateTime m_creationDate;
-  QDateTime m_recordDate;
+  QDate m_creationDate;
+  QDate m_recordDate;
   QString m_costCenter;
   QString m_project;
   QString m_subject;
   int m_minutes;
-
 };
 
 #endif // RECORD_H

@@ -11,7 +11,7 @@ XmlParser::~XmlParser(){
   qDebug() << "XmlParser Instance destroyed";
 }
 
-QVector<QVector<QString*>*>* XmlParser::READXML(const QString& path){
+void XmlParser::READXML(const QString& path, QVector<QVector<QString>> &xml_output){
   qDebug() << "Attempting to read XML file @" << path;
   // We change the path to file
   QFile file(path);
@@ -24,9 +24,6 @@ QVector<QVector<QString*>*>* XmlParser::READXML(const QString& path){
 
   // Create reader to parse XML
   QXmlStreamReader reader(&file);
-
-  // Allocate return value on heap
-  QVector<QVector<QString*>*>* records = new QVector<QVector<QString*>*>();
 
   // Parse the document
   if (reader.readNextStartElement()) {
@@ -41,43 +38,41 @@ QVector<QVector<QString*>*>* XmlParser::READXML(const QString& path){
               if(reader.name() == "record"){
                   // Reading can be any order, but writing and storing internal:
                   // addDate, recordDate, costCenter, project, subject, minutes;
-                  QVector<QString*> rec;
+                  QVector<QString> rec;
                   QXmlStreamAttribute att;
                   foreach (att, reader.attributes()) {
                       if(att.name() == "addDate"){
-                          rec.append(new QString(att.value().toString()));
+                          rec.append(QString(att.value().toString()));
                         }
 
                       if(att.name() == "recordDate"){
-                          rec.append(new QString(att.value().toString()));
+                          rec.append(QString(att.value().toString()));
                         }
 
                       if(att.name() == "costCenter"){
-                          rec.append(new QString(att.value().toString()));
+                          rec.append(QString(att.value().toString()));
                         }
 
                       if(att.name() == "project"){
-                          rec.append(new QString(att.value().toString()));
+                          rec.append(QString(att.value().toString()));
                         }
 
                       if(att.name() == "subject"){
-                          rec.append(new QString(att.value().toString()));
+                          rec.append(QString(att.value().toString()));
                         }
 
                       if(att.name() == "minutes"){
-                          rec.append(new QString(att.value().toString()));
+                          rec.append(QString(att.value().toString()));
                         }
                     }
 
-                  QVector<QString*>* record = new QVector<QString*>();
-
-
-                  foreach(QString* str, rec){
-                      record->append(str);
+                  QVector<QString> record;
+                  foreach(QString str, rec){
+                      record.append(str);
                       //qDebug(qPrintable(*str));
                     }
-                  records->append(record);
-                  qDebug() << "Record read: " << *record->at(0) << *record->at(1) << *record->at(2) << *record->at(3) << *record->at(4) << *record->at(5);
+                  xml_output.append(record);
+                  qDebug() << "Record read: " << record.at(0) << record.at(1) << record.at(2) << record.at(3) << record.at(4) << record.at(5);
                   //qDebug(qPrintable(addDate + recordDate + costCenter + project + subject + minutes));
 
                   reader.readNextStartElement(); // Going up a level
@@ -91,10 +86,10 @@ QVector<QVector<QString*>*>* XmlParser::READXML(const QString& path){
           reader.raiseError(QObject::tr("Incorrect file"));
         }
     }
-  return records;
+  reader.clear();
 }
 
-void XmlParser::WRITEXML(const QString& path, QVector<QVector<QString*>*>* records) {
+void XmlParser::WRITEXML(const QString& path, const QVector<QVector<QString>> &xml_input) {
   QFile file(path);
   if(!file.open(QFile::WriteOnly| QFile::Text)){
       qDebug() << "Cannot write file" << file.errorString();
@@ -106,20 +101,21 @@ void XmlParser::WRITEXML(const QString& path, QVector<QVector<QString*>*>* recor
   writer.writeStartDocument();
   writer.writeStartElement("diary");
 
-  QVector<QString*>* rec;
-  foreach(rec, *records) {
-      writer.writeStartElement("record");
-      int i = 0;
-      writer.writeAttribute("addDate", *rec->at(i++));
-      writer.writeAttribute("recordDate", *rec->at(i++));
-      writer.writeAttribute("costCenter", *rec->at(i++));
-      writer.writeAttribute("project", *rec->at(i++));
-      writer.writeAttribute("subject", *rec->at(i++));
-      writer.writeAttribute("minutes", *rec->at(i++));
+  QVector<QString> rec;
+  if (!xml_input.empty()) {
+      foreach(rec, xml_input) {
+          writer.writeStartElement("record");
+          int i = 0;
+          writer.writeAttribute("addDate", rec.at(i++));
+          writer.writeAttribute("recordDate", rec.at(i++));
+          writer.writeAttribute("costCenter", rec.at(i++));
+          writer.writeAttribute("project", rec.at(i++));
+          writer.writeAttribute("subject", rec.at(i++));
+          writer.writeAttribute("minutes", rec.at(i++));
 
-      writer.writeEndElement(); // record
-    }
-
+          writer.writeEndElement(); // record
+        }
+  }
   writer.writeEndElement(); // diary
   writer.writeEndDocument();
 }

@@ -1,9 +1,10 @@
 #ifndef DIARYDAO_H
 #define DIARYDAO_H
 
-#include "record.h"
 #include <QString>
-#include <xmlparser.h>
+
+#include "record.h"
+#include "xmlparser.h"
 
 class DiaryDao
 {
@@ -19,8 +20,8 @@ private:
   DiaryDao& operator=(const DiaryDao& rhs) = delete;
 
 public:
-  QVector<Record*>* read(const QString& path);
-  void write(const QString& path);
+  void read(const QString& path, QVector<Record*> &records);
+  void write(const QString& path,  const QVector<Record*> &records);
 };
 
 #endif // DIARYDAO_H

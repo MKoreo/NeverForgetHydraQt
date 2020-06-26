@@ -16,7 +16,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         backend.cpp \
+        costCenterNamesModel.cpp \
         main.cpp \
+        projectNamesModel.cpp \
+        subjectNamesModel.cpp \
         sysinfo.cpp
 
 linux {
@@ -41,26 +44,36 @@ QML_DESIGNER_IMPORT_PATH =
 
 HEADERS += \
     backend.h \
+    costCenterNamesModel.h \
+    projectNamesModel.h \
+    subjectNamesModel.h \
     sysinfo.h
 
-LIBS += -L$$OUT_PWD/../stcore/ -lstcore
+
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../stcore/release/ -lstcore
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../stcore/debug/ -lstcore
+else:unix: LIBS += -L$$OUT_PWD/../stcore/ -lstcore
+
 INCLUDEPATH += $$PWD/../stcore
 DEPENDPATH += $$PWD/../stcore
 
-LIBS += -L$$OUT_PWD/../stdata/ -lstdata
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../stcore/release/libstcore.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../stcore/debug/libstcore.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../stcore/release/stcore.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../stcore/debug/stcore.lib
+else:unix: PRE_TARGETDEPS += $$OUT_PWD/../stcore/libstcore.a
+
+
+win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../stdata/release/ -lstdata
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../stdata/debug/ -lstdata
+else:unix: LIBS += -L$$OUT_PWD/../stdata/ -lstdata
+
 INCLUDEPATH += $$PWD/../stdata
 DEPENDPATH += $$PWD/../stdata
 
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
-
-headersDataFiles.path = $$[QT_INSTALL_HEADERS]/MyLib/
-headersDataFiles.files = $$PWD/src/*.h
-INSTALLS += headersDataFiles
-
-libraryFiles.path = $$[QT_INSTALL_LIBS]
-CONFIG(debug, debug|release):libraryFiles.files = $$OUT_PWD/debug/*.a $$OUT_PWD/debug/*.prl
-CONFIG(release, debug|release):libraryFiles.files = $$OUT_PWD/release/*.a $$OUT_PWD/release/*.prl
-INSTALLS += libraryFiles
+win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../stdata/release/libstdata.a
+else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../stdata/debug/libstdata.a
+else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../stdata/release/stdata.lib
+else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$OUT_PWD/../stdata/debug/stdata.lib
+else:unix: PRE_TARGETDEPS += $$OUT_PWD/../stdata/libstdata.a
