@@ -26,6 +26,9 @@ public:
 private:
     QVector<QString> m_comboEntries;
 
+public:
+    int g_MAX_HISTORY = 2;
+
 };
 
 #endif // COSTCENTERNAMESMODEL_H

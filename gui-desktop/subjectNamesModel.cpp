@@ -6,9 +6,14 @@ SubjectNamesModel::SubjectNamesModel(QObject *parent)
     Diary::instance().loadDiary("/home/thomas/Bureaublad/qt_records_write.xml");
     QVector<Record*> records = Diary::instance().getRecords();
     QList<QString> keep;
+    int count = 0;
     foreach(Record* rec, records){
-        if(!keep.contains(rec->subject())){
-            keep.append(rec->subject());
+        if(++count <= g_MAX_HISTORY){
+            if(!keep.contains(rec->subject())){
+                keep.append(rec->subject());
+            }
+        } else {
+            break;
         }
     }
     foreach(QString qstr, keep){

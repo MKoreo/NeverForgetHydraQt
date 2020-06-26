@@ -8,6 +8,11 @@
 #include "diarydao.h"
 #include "record.h"
 
+enum SortStyle {
+    DateAscending,
+    DateDescending
+};
+
 class Diary
 {
 public:
@@ -30,6 +35,7 @@ public:
   // Manipulating diary
   void addRecord(Record* rec);
   bool removeRecord(const Record* rec);
+  void sort(const SortStyle);
 
   // checking content
   Record* contains(const Record* rec) const;

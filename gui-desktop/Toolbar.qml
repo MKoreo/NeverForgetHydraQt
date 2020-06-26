@@ -79,6 +79,7 @@ Rectangle {
 
             model: CostCenterNamesModel {
                 id: _cbCostCenterModel
+
             }
 
             // Store the previous text for restoring it if we cancel

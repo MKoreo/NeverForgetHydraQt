@@ -1,6 +1,7 @@
 #include "record.h"
 
 Record::Record()
+    : m_creationDate()
 {
 
 }

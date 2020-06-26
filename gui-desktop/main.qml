@@ -16,6 +16,7 @@ ApplicationWindow {
     BackEnd {
         id: _backend
     }
+
     // Components
     menuBar: MenuBar {
         id: _menubar
@@ -25,7 +26,7 @@ ApplicationWindow {
             Action { text: qsTr("&Open...") }
             Action { text: qsTr("Save &As...")}
             MenuSeparator { }
-            Action { text: qsTr("&Hydra"); onTriggered: Qt.openUrlExternally("http://www.google.be"); }
+            Action { text: qsTr("&Hydra"); onTriggered: _backend.openHydra(); }
             Action { text: qsTr("&Quit"); onTriggered: Qt.callLater(Qt.quit)}
         }
 

@@ -14,8 +14,9 @@ void BackEnd::newDiary(){
 void BackEnd::loadDiary(){
 
 }
-void BackEnd::openHydra(){
 
+void BackEnd::openHydra(){
+    QDesktopServices::openUrl(QUrl("/home", QUrl::TolerantMode));
 }
 
 void BackEnd::addRecord(){

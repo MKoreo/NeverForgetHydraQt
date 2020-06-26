@@ -9,7 +9,9 @@
 #include "diary.h"
 #include "record.h"
 
-
+//
+#include <QDesktopServices>
+#include <QUrl>
 class BackEnd : public QObject
 {
     Q_OBJECT
@@ -31,6 +33,7 @@ public:
 
     // Date
     void setDate(const QString &date);
+    void setCurrentDate();
     QString getDate();
 
         // Dropdown
