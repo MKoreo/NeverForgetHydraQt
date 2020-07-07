@@ -1,20 +1,16 @@
 import QtQuick 2.3
-
 import QtQuick.Controls 2.5
-import QtQuick.Controls.Universal 2.3
+import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.14
-import io.home.essentials.backend 1.0
-import io.home.essentials.CostCenterNamesModel 1.0
-import io.home.essentials.SubjectNamesModel 1.0
-import io.home.essentials.ProjectNamesModel 1.0
+import io.home.essentials 1.0
 
 Rectangle {
-
     id: _toolbar
-    color: palette.highlight
-    property int foldedDateWidth: 60
-    property int unfoldedDateWidth: 110
-    property int edgeMargin: 5
+    color: Material.accent
+
+    property int foldedDateWidth: 75
+    property int unfoldedDateWidth: 140
+    property int edgeMargin: 7
     anchors.fill: parent
 
     BackEnd {
@@ -22,10 +18,12 @@ Rectangle {
     }
 
     RowLayout{
+        Material.accent: Material.background
         id: _toolRow
         anchors.fill: parent
 
         TextField{
+            Material.foreground: Material.background
             id: _tfDate
             text: qsTr("")
             Layout.margins: edgeMargin
@@ -59,16 +57,18 @@ Rectangle {
 
         SpinBox {
             id: _sbTime
+            Material.foreground: Material.background
             Layout.margins: edgeMargin
             editable: true
             wheelEnabled: true
-            implicitWidth: 75
+            implicitWidth: 120
             Layout.fillHeight: true
 
         }
 
         ComboBox {
             id: _cbCostCenter
+            Material.foreground: Material.background
             enabled: true
             Layout.margins: edgeMargin
             wheelEnabled: true
@@ -76,12 +76,13 @@ Rectangle {
             Layout.fillWidth: true
             implicitWidth: 150
             Layout.fillHeight: true
-
-            model: CostCenterNamesModel {
+            textRole: "costCenter"
+            model: ComboBoxNamesModel {
                 id: _cbCostCenterModel
-
+                g_role: _cbCostCenter.textRole
             }
-
+            // S
+            font.bold: true
             // Store the previous text for restoring it if we cancel
             property string oldText
 
@@ -118,16 +119,19 @@ Rectangle {
         ComboBox {
             id: _cbProject
 
+            Material.foreground: Material.background
             wheelEnabled: true
             editable: true
             Layout.margins: edgeMargin
             Layout.fillWidth: true
             implicitWidth: 150
             Layout.fillHeight: true
-
+            font.bold: true
             // TBD
-            model: ProjectNamesModel {
+            textRole: "project"
+            model: ComboBoxNamesModel {
                 id: _cbProjectModel
+                g_role: _cbProject.textRole
             }
             // Store the previous text for restoring it if we cancel
             property string oldText
@@ -163,17 +167,20 @@ Rectangle {
 
         ComboBox {
             id: _cbSubject
+            textRole: "subject"
             wheelEnabled: true
+            Material.foreground: Material.background
             editable: true
             Layout.fillHeight: true
             Layout.margins: edgeMargin
             Layout.fillWidth: true
             implicitWidth: 150
             implicitHeight: parent.height
-
+            font.bold: true
             // TBD
-            model: SubjectNamesModel {
+            model: ComboBoxNamesModel {
                 id: _cbSubjetModel
+                g_role: _cbSubject.textRole
             }
             // Store the previous text for restoring it if we cancel
             property string oldText
@@ -207,12 +214,14 @@ Rectangle {
             }
         }
 
-        ToolButton{
+        Button{
+            id: _addButton
             text: "ADD"
-            Layout.preferredWidth: 50
+            Layout.preferredWidth: 60
+            highlighted: true
 
+            Material.foreground: Material.backgroundDimColor
 
-            implicitHeight: parent.height
             Layout.fillHeight: true
             Layout.margins: edgeMargin
             onClicked: {
@@ -229,6 +238,6 @@ Rectangle {
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;height:40;width:1000}
+    D{i:0;autoSize:true;height:60;width:1000}
 }
 ##^##*/

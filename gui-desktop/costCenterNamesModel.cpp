@@ -48,3 +48,5 @@ void CostCenterNamesModel::insert(QString value){
     m_comboEntries.insert(0, value);
     endInsertRows();
 }
+
+

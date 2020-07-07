@@ -49,9 +49,9 @@ bool Diary::removeRecord(const Record* rec){
     return false;
 }
 
-void Diary::sort(SortStyle style){
+void Diary::sort(){
 
-    // Bounds are a record
+    // Bounds are a records
     QList<Record*> toBeDeleted = { new Record(), new Record(), new Record(), new Record()};
     Record* earliest = toBeDeleted.at(0);
     Record* earlier = toBeDeleted.at(1);
@@ -87,6 +87,11 @@ void Diary::sort(SortStyle style){
                 later = currentRec;
                 laterSpot = i;
             }
+        }
+
+        // Optimalisation: Prevents reverse order if only 1 day is in Diary + speeds up by skipping all bounds
+        if(earlierSpot == laterSpot) {
+            break;
         }
 
         // Simply by flipping record positions we can keep working in m_records

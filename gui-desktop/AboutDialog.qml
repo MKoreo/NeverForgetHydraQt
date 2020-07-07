@@ -1,42 +1,91 @@
 import QtQuick 2.3
-import QtQuick.Controls 1.2
+import QtQuick.Controls 2.5
+import QtQuick.Controls.Material 2.3
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.12
 
-
 Dialog {
-    standardButtons: StandardButton.Ok
     title: "About Never Forget Hydra"
-    RowLayout {
-        implicitWidth: 400
-        implicitHeight: 100
-        spacing: 10
-
+    id: _dialog
+    contentItem: Pane {
         ColumnLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-
-            Label {
-                text: qsTr("Developer:")
-                font.weight: Font.Bold
+            implicitWidth: 400
+            implicitHeight: 100
+            RowLayout {
+                Layout.fillHeight: true
                 Layout.fillWidth: true
-                horizontalAlignment: Text.left
+                spacing: 10
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    Label {
+                        text: qsTr("Developed by:")
+                        font.weight: Font.Bold
+                        Layout.fillWidth: true
+                        horizontalAlignment: Text.left
+                    }
+
+                    Label {
+                        text: qsTr("Contact:")
+                        font.weight: Font.Bold
+                        Layout.fillWidth: true
+                        horizontalAlignment: Text.left
+                    }
+
+                    Label {
+                        text: qsTr("Made with:")
+                        font.weight: Font.Bold
+                        Layout.fillWidth: true
+                        horizontalAlignment: Text.left
+                    }
+                }
+
+
+                ColumnLayout {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+
+                    Label {
+                        text: qsTr("Thomas Poppe (THOPOP)")
+                        Layout.fillWidth: true
+                        horizontalAlignment: Text.right
+                    }
+
+                    Label {
+                        text: qsTr("thomas.poppe@barco.com")
+                        Layout.fillWidth: true
+                        horizontalAlignment: Text.right
+                    }
+
+                    Label {
+                        text: qsTr("Opensource QT 5.14")
+                        Layout.fillWidth: true
+                        horizontalAlignment: Text.right
+                    }
+                }
+
+            }
+
+            Button {
+                text: qsTr("What ABOUT it?!")
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                highlighted: true
+                onClicked: _dialog.close()
             }
         }
 
 
-        ColumnLayout {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-
-            Label {
-                text: qsTr("Thomas Poppe (THOPOP)")
-                Layout.fillWidth: true
-                horizontalAlignment: Text.right
-            }
-        }
     }
 }
+
+
+
+
+
+
 
 /*##^##
 Designer {

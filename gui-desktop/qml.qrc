@@ -4,7 +4,14 @@
         <file>qtquickcontrols2.conf</file>
         <file>Toolbar.qml</file>
         <file>QuickSettings.qml</file>
-        <file>AboutDialog.qml</file>
-        <file>NewDialog.qml</file>
     </qresource>
+    <qresource prefix="/dialogs">
+        <file>NewDialog.qml</file>
+        <file>OpenDialog.qml</file>
+        <file>AboutDialog.qml</file>
+        <file>SaveDialog.qml</file>
+        <file>FeedbackDialog.qml</file>
+        <file>ChangelogDialog.qml</file>
+    </qresource>
+    <qresource prefix="/images"/>
 </RCC>

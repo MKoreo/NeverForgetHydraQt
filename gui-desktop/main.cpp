@@ -3,43 +3,44 @@
 #include <QQuickWindow>
 #include <QQuickStyle>
 
-
 #include "backend.h"
 
-#include "costCenterNamesModel.h"
-#include "projectNamesModel.h"
-#include "subjectNamesModel.h"
+#include "datagridViewModel.h"
+#include "comboBoxNamesModel.h"
 
 int main(int argc, char *argv[]) {
-    // Random vars and attributes
-
-    qputenv("SQG_VISUALIZE", "overdraw");    // Should show depth, but doesn't appear to work
-
     // Force a certain style
-    // QQuickStyle::setStyle("Imagine");
+    //QQuickStyle::setStyle("Imagine");
     // QQuickStyle::setStyle("Material");
 
     // Enable high DPI scaling
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-
+    //QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling );
+    // Create the GUI application and set settings
     QGuiApplication app(argc, argv);
     app.setOrganizationName("THOPOP technological inventions");
     app.setOrganizationDomain("home.com");
     app.setApplicationName("NeverForgetHydra");
+    app.setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Floor);
+    // Register types (connect qml <> c++)
+    // -- Backend on GUI
+    qmlRegisterType<BackEnd>("io.home.essentials", 1, 0, "BackEnd");
 
-    qmlRegisterType<BackEnd>("io.home.essentials.backend", 1, 0, "BackEnd");
-    // Models
-    // -- Comboboxes
-    qmlRegisterType<CostCenterNamesModel>("io.home.essentials.CostCenterNamesModel", 1, 0, "CostCenterNamesModel");
-    qmlRegisterType<ProjectNamesModel>("io.home.essentials.ProjectNamesModel", 1, 0, "ProjectNamesModel");
-    qmlRegisterType<SubjectNamesModel>("io.home.essentials.SubjectNamesModel", 1, 0, "SubjectNamesModel");
+    // -- Models that provide data to GUI
+    // ---- Comboboxes
+    qmlRegisterType<ComboBoxNamesModel>("io.home.essentials", 1, 0, "ComboBoxNamesModel");
+    // ---- DataGrid
+    qmlRegisterType<DatagridViewModel>("io.home.essentials", 1, 0, "DatagridViewModel");
 
 
+    // Start QML app engine
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+
+    // Do some weird stuff
     QObject *topLevel = engine.rootObjects().value(0);
     QQuickWindow *window = qobject_cast<QQuickWindow *>(topLevel);
-    window->show();
 
+    // Show Window + eternal loop
+    window->show();
     return app.exec();
 }

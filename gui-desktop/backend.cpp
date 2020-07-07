@@ -7,20 +7,45 @@ BackEnd::BackEnd(QObject *parent) :
     // Change stuff in backend to get it to the GUI
 }
 
-void BackEnd::newDiary(){
+void BackEnd::newDiary(QString path){
+    // TODO: comfirmation that you will delete the old one
+    if(path.contains("file:")){
+        path.remove(0, 7);
+    }
+    m_path = path;
     Diary::instance().newDiary(m_path);
 }
 
 void BackEnd::loadDiary(){
+    newDiary(m_path);
+    Diary::instance().loadDiary(m_path);
+}
 
+void BackEnd::saveDiary(){
+    Diary::instance().saveDiary(m_path);
 }
 
 void BackEnd::openHydra(){
+    // TODO: Change url to realy HYDRA Url
     QDesktopServices::openUrl(QUrl("/home", QUrl::TolerantMode));
 }
 
 void BackEnd::addRecord(){
-    Diary::instance().addRecord(new Record(QDate::currentDate().toString("yyyy-MM-dd"), m_date, m_costCenter, m_project, m_subject, m_minutes));
+    if (validateMembers()){
+        Diary::instance().addRecord(new Record(QDate::currentDate().toString("yyyy-MM-dd"), m_date, m_costCenter, m_project, m_subject, m_minutes));
+    } else {
+        // TODO: Popup that something isn't good yet
+    }
+}
+
+bool BackEnd::validateMembers(){
+    // Determines if the parameters to create a record are correct
+    if(m_date.count() != 10 || m_date[4] != "-" || m_date[7] != "-"){
+        return false;
+    } else if(m_costCenter != "" && m_project != "" && m_subject != "" && m_minutes != ""){
+        return true;
+    }
+    return false;
 }
 
 QString BackEnd::getPath(){
@@ -35,8 +60,8 @@ void BackEnd::setDate(const QString &date){
     m_date = date;
 }
 
-QString BackEnd::getDate(){
-    return m_date;
+void BackEnd::setCurrentDate(){
+
 }
 void BackEnd::setCostCenter(const QString &costCenter){
     m_costCenter = costCenter;

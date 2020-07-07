@@ -1,18 +1,22 @@
-import QtQuick 2.3
-import QtQuick.Controls 1.2
+import QtQuick 2.15
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.14
-import io.home.essentials.backend 1.0
+import io.home.essentials 1.0
+import QtQuick.Controls.Material 2.12
+import "qrc:///dialogs"
 
 ApplicationWindow {
     id: _root
     title: "NeverForgetHydraQt"
 
-    palette.highlight: "#17be9b"
+    // Dimensions
     visible: true
-    width: 900
-    height: 350
+    width: 1200
+    height: 550
 
+    Material.theme: Material.Light
+    Material.accent: Material.Green
+    // Connection
     BackEnd {
         id: _backend
     }
@@ -22,31 +26,29 @@ ApplicationWindow {
         id: _menubar
         Menu {
             title: qsTr("&File")
-            Action { text: qsTr("&New..."); onTriggered: _fileDialog.open()}
-            Action { text: qsTr("&Open...") }
-            Action { text: qsTr("Save &As...")}
+            Action { text: qsTr("&New...");     onTriggered: _newFileDialog.open()}
+            Action { text: qsTr("&Open...");    onTriggered: _openFileDialog.open()}
+            Action { text: qsTr("Save &As..."); onTriggered: _saveFileDialog()}
             MenuSeparator { }
-            Action { text: qsTr("&Hydra"); onTriggered: _backend.openHydra(); }
-            Action { text: qsTr("&Quit"); onTriggered: Qt.callLater(Qt.quit)}
+            Action { text: qsTr("&Hydra");      onTriggered: _backend.openHydra(); }
+            Action { text: qsTr("&Quit");       onTriggered: Qt.callLater(Qt.quit)}
         }
 
         Menu {
             title: qsTr("&Preferences");
-            Action { text: qsTr("Settings"); onTriggered: _quickSettings.open()}
-            Action { text: qsTr("Theme"); onTriggered: palette.Highlight="#FF3333"}
+            Action { text: qsTr("Settings");    onTriggered: _quickSettings.open()}
+            Action { text: qsTr("Theme");       onTriggered: _root.Material.theme = (_root.Material.theme == Material.Light ? Material.Dark : Material.Light)}
         }
-
-
 
         Menu {
             title: qsTr("&View");
-            Action { text: qsTr("Records"); onTriggered:{_workSpace.currentIndex = 0}}
-            Action { text: qsTr("Statistics");onTriggered:{ _workSpace.currentIndex = 1}}
+            Action { text: qsTr("Records");     onTriggered:{_workSpace.currentIndex = 0}}
+            Action { text: qsTr("Statistics");  onTriggered:{ _workSpace.currentIndex = 1}}
         }
 
         Menu {
             title: qsTr("&Help")
-            Action { text: qsTr("&About");onTriggered:{ _aboutDialog.open()} }
+            Action { text: qsTr("&About");          onTriggered:{ _aboutDialog.open()} }
             Action { text: qsTr("&Send Feedback") }
             Action { text: qsTr("&Changelog") }
         }
@@ -55,8 +57,9 @@ ApplicationWindow {
 
     Drawer {
         id: _quickSettings
+        Material.elevation: -50 // Prevent shadow on toolbar
         y: _mainToolBar.height + _menubar.height
-        width: 350
+        width: 500
         height: _root.height - _menubar.height - _mainToolBar.height
 
         contentItem: QuickSettings {
@@ -70,7 +73,7 @@ ApplicationWindow {
         id: _mainToolBar
         rightPadding: 0
         leftPadding: 0
-        height: 35
+        height: 50
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: _menubar.bottom
@@ -78,16 +81,19 @@ ApplicationWindow {
 
         Toolbar {
             // The Component
+            z: 100
         }
     }
 
     RowLayout {
+        z: -1
         id: _space
         spacing: 0
+        anchors.topMargin: 10
         anchors.top: _mainToolBar.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        anchors.bottom: _statusBar.top
+        anchors.bottom: parent.bottom
 
         Button {
             id: _openQuick
@@ -108,83 +114,192 @@ ApplicationWindow {
             currentIndex: 0
             orientation: Qt.Horizontal
             interactive: false
+
+
             Item {
                 id: _records
-                Rectangle {
+
+                ListView {
+                    id: listView
                     anchors.fill: parent
-                    color: palette.alternateBase
+
+                    contentWidth: width
+                    //flickableDirection: Flickable.HorizontalAndVerticalFlick
+                    headerPositioning: ListView.InlineHeader
+                    header: Row { z: 120
+
+                        spacing: 0
+                        function itemAt(index) { return repeater.itemAt(index) }
+                        Repeater {
+                            id: repeater
+                            model: ["Record Date", "Add Date", "Cost Center", "Project", "Subject", "Minutes"]
+                            Rectangle {
+                                implicitWidth: (listView.width/6) -5
+                                implicitHeight: _text.height
+
+                                color: Material.accent
+                                Label {
+                                    id: _text
+                                    anchors.centerIn: parent
+                                    text: modelData
+                                    color: Material.background
+                                    font.bold: true
+                                    font.pixelSize: 18
+                                    padding: 5
+
+                                }
+                            }
+
+
+                        }
+                    }
+
+                    model: DatagridViewModel {
+                        id: _test
+                    }
+
+                    delegate: Column {
+                        id: delegate
+                        property int row: index
+                        Rectangle {
+                            color: "silver"
+                            width: _arow.width
+                            height: 1
+                        }
+                        Row {
+                            id: _arow
+                            spacing: 0
+                            Repeater {
+                                model: 6
+
+                                ItemDelegate {
+                                    property int column: index
+
+                                    Text {
+                                        anchors.fill: parent
+                                        text: _test.get(delegate.row, column)
+                                        color: Material.foreground
+                                        verticalAlignment: Text.AlignVCenter
+                                        horizontalAlignment: Text.AlignHCenter
+
+                                    }
+
+                                    width: listView.headerItem.itemAt(column).width
+                                    Rectangle {
+                                        color: "silver"
+                                        width: 1
+                                        height: parent.height
+                                    }
+                                }
+
+                            }
+                            Rectangle {
+                                color: "silver"
+                                width: 1
+                                height: parent.height
+                            }
+
+                        }
+                        Rectangle {
+                            color: "silver"
+                            width: _arow.width
+                            height: 1
+                        }
+                    }
+
+                    ScrollIndicator.horizontal: ScrollIndicator { }
+                    ScrollIndicator.vertical: ScrollIndicator { }
                 }
+
+
+
             }
+
 
             Item {
                 id: _statistics
                 Rectangle {
                     anchors.fill: parent
-                    color: palette.base
+                    color: Material.buttonDisabledColor
+                    Button {
+                        anchors.fill: parent
+                        onClicked: popup.open()
+                    }
                 }
             }
 
         }
-
-
     }
 
-    Rectangle {
+    Item {
         //background statusbar
-        id: _statusBar
-        height: 20
-        anchors.left: parent.left
+        id: _status
+        height: popup.height
+        width: popup.width
         anchors.right: parent.right
         anchors.bottom: parent.bottom
-        color: palette.base
-
-        RowLayout{
-            anchors.fill: parent
-            spacing: 10
-
-            Label {
-                id: _statusfield
-                text: qsTr("Status: Almost exploding")
+        anchors.margins: 10
 
 
-                rightPadding: 5
-                leftPadding: 5
-                background: Rectangle{
-                    color: palette.highlight
+
+        Popup {
+            id: popup
+            modal: false
+            focus: false
+
+            Material.background: Material.accent
+
+
+            Column {
+                spacing: 2
+                Text {
+                    id: _popupTitle
+                    text: "Record has been altered"
+                    font.bold: true
+                    font.pointSize: 12
+                    color: _root.Material.background
                 }
 
-            }
-
-            Rectangle{
-                Layout.fillWidth: true
-            }
-
-            Label {
-                id: _statusfield2
-                text: qsTr("Helper: Not inplemented")
-                rightPadding: 5
-                leftPadding: 5
-                background: Rectangle{
-                    color: "Blue"
+                Text {
+                    id: _popupContent
+                    text: "The minutes have been increased by 30."
+                    font.pointSize: 10
+                    color: _root.Material.background
                 }
             }
 
+
+
+
+
+
+
+
+
+
+            closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
         }
+
     }
 
     AboutDialog {
         id: _aboutDialog
+
+
     }
 
     NewDialog {
-        id: _fileDialog
+        id: _newFileDialog
     }
 
-
+    OpenDialog {
+        id: _openFileDialog
+    }
+    SaveDialog {
+        id: _saveFileDialog
+    }
 }
 
-/*##^##
-Designer {
-    D{i:0;formeditorColor:"#ffffff";height:250;width:1000}
-}
-##^##*/
+
+
+
