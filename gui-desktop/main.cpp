@@ -1,7 +1,9 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QApplication>
 #include <QQuickWindow>
 #include <QQuickStyle>
+#include <QQmlContext>
 
 #include "backend.h"
 
@@ -10,27 +12,35 @@
 
 int main(int argc, char *argv[]) {
     // Force a certain style
-    //QQuickStyle::setStyle("Imagine");
-    // QQuickStyle::setStyle("Material");
+    // QQuickStyle::setStyle("Default");
+    // QQuickStyle::setStyle("Universal");
+    // QQuickStyle::setStyle("Fusion");
 
     // Enable high DPI scaling
-    //QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling );
-    // Create the GUI application and set settings
-    QGuiApplication app(argc, argv);
+    QApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
+
+    // Create the QGuiAplication and set settings
+    // 2020-07-19: Changed to QApplication (include widgets in .pro)
+    QApplication app(argc, argv);
+
+    // -- Set app settings
     app.setOrganizationName("THOPOP technological inventions");
     app.setOrganizationDomain("home.com");
     app.setApplicationName("NeverForgetHydra");
     app.setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Floor);
+
+    // Doesn't work, TODO:
+    app.setWindowIcon(QIcon("qrc:/images/hourglas.ico"));
+
     // Register types (connect qml <> c++)
     // -- Backend on GUI
-    qmlRegisterType<BackEnd>("io.home.essentials", 1, 0, "BackEnd");
+    qmlRegisterType<BackEnd>("home.NeverForgetHydra", 1, 0, "BackEnd");
 
     // -- Models that provide data to GUI
     // ---- Comboboxes
-    qmlRegisterType<ComboBoxNamesModel>("io.home.essentials", 1, 0, "ComboBoxNamesModel");
+    qmlRegisterType<ComboBoxNamesModel>("home.NeverForgetHydra", 1, 0, "ComboBoxNamesModel");
     // ---- DataGrid
-    qmlRegisterType<DatagridViewModel>("io.home.essentials", 1, 0, "DatagridViewModel");
-
+    qmlRegisterType<DatagridViewModel>("home.NeverForgetHydra", 1, 0, "DatagridViewModel");
 
     // Start QML app engine
     QQmlApplicationEngine engine;

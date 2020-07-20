@@ -1,9 +1,10 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.14
-import io.home.essentials 1.0
+import home.NeverForgetHydra 1.0
 import QtQuick.Controls.Material 2.12
 import "qrc:///dialogs"
+import Qt.labs.platform 1.1 as Labs
 
 ApplicationWindow {
     id: _root
@@ -14,11 +15,30 @@ ApplicationWindow {
     width: 1200
     height: 550
 
-    Material.theme: Material.Light
-    Material.accent: Material.Green
+    Material.theme: Material.Dark
+
     // Connection
     BackEnd {
         id: _backend
+    }
+
+    ComboBoxNamesModel {
+        id: _cbCostCenterModel
+        role: "costCenter"
+    }
+
+    ComboBoxNamesModel {
+        id: _cbProjectModel
+        role: "project"
+    }
+
+    ComboBoxNamesModel {
+        id: _cbSubjetModel
+        role: "subject"
+    }
+
+    DatagridViewModel {
+        id: _dataGridViewModel
     }
 
     // Components
@@ -27,7 +47,7 @@ ApplicationWindow {
         Menu {
             title: qsTr("&File")
             Action { text: qsTr("&New...");     onTriggered: _newFileDialog.open()}
-            Action { text: qsTr("&Open...");    onTriggered: _openFileDialog.open()}
+            Action { text: qsTr("&Open...");    onTriggered: _openFileDialog.open();}
             Action { text: qsTr("Save &As..."); onTriggered: _saveFileDialog()}
             MenuSeparator { }
             Action { text: qsTr("&Hydra");      onTriggered: _backend.openHydra(); }
@@ -154,9 +174,7 @@ ApplicationWindow {
                         }
                     }
 
-                    model: DatagridViewModel {
-                        id: _test
-                    }
+                    model: _dataGridViewModel
 
                     delegate: Column {
                         id: delegate
@@ -177,7 +195,7 @@ ApplicationWindow {
 
                                     Text {
                                         anchors.fill: parent
-                                        text: _test.get(delegate.row, column)
+                                        text: _dataGridViewModel.get(delegate.row, column)
                                         color: Material.foreground
                                         verticalAlignment: Text.AlignVCenter
                                         horizontalAlignment: Text.AlignHCenter
@@ -267,16 +285,6 @@ ApplicationWindow {
                     color: _root.Material.background
                 }
             }
-
-
-
-
-
-
-
-
-
-
             closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
         }
 
@@ -294,9 +302,41 @@ ApplicationWindow {
 
     OpenDialog {
         id: _openFileDialog
+
     }
     SaveDialog {
         id: _saveFileDialog
+
+    }
+
+    Labs.SystemTrayIcon {
+        // Needs widgets include
+        visible: true
+        icon.source: "qrc:/images/hourglas.png"
+
+        menu: Labs.Menu {
+
+            Labs.MenuItem {
+                text: qsTr("Show")
+                onTriggered: {
+                    _root.show()
+                    _root.raise()
+                    _root.requestActivate();
+                }
+            }
+
+            Labs.MenuItem {
+                text: qsTr("Exit")
+                onTriggered: Qt.quit()
+            }
+
+        }
+
+        onActivated: {
+            _root.show()
+            _root.raise()
+            _root.requestActivate()
+        }
     }
 }
 

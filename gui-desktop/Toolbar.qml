@@ -2,7 +2,7 @@ import QtQuick 2.3
 import QtQuick.Controls 2.5
 import QtQuick.Controls.Material 2.3
 import QtQuick.Layouts 1.14
-import io.home.essentials 1.0
+import home.NeverForgetHydra 1.0
 
 Rectangle {
     id: _toolbar
@@ -25,20 +25,23 @@ Rectangle {
         TextField{
             Material.foreground: Material.background
             id: _tfDate
-            text: qsTr("")
             Layout.margins: edgeMargin
+            text: _backend.date.substring(5,10)
+            leftPadding: 0
+            topPadding: 0
+            Layout.fillHeight: true
             horizontalAlignment: Text.AlignHCenter
             // Start in small position
             state: "folded"
-            Layout.fillHeight: true
+
             selectByMouse: true
 
             // Increase size if we pop calendar
             states: [
                 State {
                     name: "unfolded";
-                    PropertyChanges { target: _tfDate; implicitWidth: unfoldedDateWidth }
-
+                    PropertyChanges { target: _tfDate; implicitWidth: unfoldedDateWidth; }
+                    PropertyChanges { target: _testarea; visible: true }
                 },
                 State {
                     name: "folded";
@@ -52,7 +55,39 @@ Rectangle {
                 PropertyAnimation {  property: "text"; duration: 0; easing.type: Easing.InOutQuad }
             }
 
-            onActiveFocusChanged: if(state == "unfolded") { state = "folded";  _backend.date = text; text = _backend.date.substring(0, 5)} else { state = "unfolded"; text = _backend.date}
+            MouseArea {
+                id: _testarea
+                anchors.fill: parent
+                visible: false
+                propagateComposedEvents: true
+                onWheel: {
+                    if (wheel.angleDelta.y > 0) {
+                        // Mousewheel up
+                        if (wheel.modifiers == Qt.NoModifier){
+                            _backend.increaseDate(0);
+                        } else if (wheel.modifiers == Qt.ControlModifier){
+                            _backend.increaseDate(1);
+                        } else {
+                            _backend.increaseDate(2);
+                        }
+                    } else {
+                        // Mousewheel down
+                        if (wheel.modifiers == Qt.NoModifier){
+                            _backend.decreaseDate(0);
+                        } else if (wheel.modifiers == Qt.ControlModifier){
+                            _backend.decreaseDate(1);
+                        } else {
+                            _backend.decreaseDate(2);
+                        }
+                    }
+                    _tfDate.text = _backend.date
+                    _dataGridViewModel.refresh(_backend.date)
+                }
+            }
+
+            onActiveFocusChanged: if(state == "unfolded") { state = "folded";  _backend.date = text; text = _backend.date.substring(5,10); _dataGridViewModel.refresh(_backend.date);} else { state = "unfolded"; text = _backend.date}
+
+
         }
 
         SpinBox {
@@ -77,10 +112,7 @@ Rectangle {
             implicitWidth: 150
             Layout.fillHeight: true
             textRole: "costCenter"
-            model: ComboBoxNamesModel {
-                id: _cbCostCenterModel
-                g_role: _cbCostCenter.textRole
-            }
+            model: _cbCostCenterModel
             // S
             font.bold: true
             // Store the previous text for restoring it if we cancel
@@ -129,10 +161,7 @@ Rectangle {
             font.bold: true
             // TBD
             textRole: "project"
-            model: ComboBoxNamesModel {
-                id: _cbProjectModel
-                g_role: _cbProject.textRole
-            }
+            model: _cbProjectModel
             // Store the previous text for restoring it if we cancel
             property string oldText
 
@@ -178,10 +207,7 @@ Rectangle {
             implicitHeight: parent.height
             font.bold: true
             // TBD
-            model: ComboBoxNamesModel {
-                id: _cbSubjetModel
-                g_role: _cbSubject.textRole
-            }
+            model: _cbSubjetModel
             // Store the previous text for restoring it if we cancel
             property string oldText
 
@@ -229,8 +255,8 @@ Rectangle {
                 _backend.project = _cbProject.currentText;
                 _backend.subject = _cbSubject.currentText;
                 _backend.minutes = _sbTime.value;
-                _backend.date = _tfDate.text;
                 _backend.addRecord();
+                _dataGridViewModel.refresh(_backend.date);
             }
         }
     }
@@ -238,6 +264,6 @@ Rectangle {
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;height:60;width:1000}
+    D{i:0;autoSize:true;height:50;width:640}
 }
 ##^##*/

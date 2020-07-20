@@ -3,7 +3,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls 2.5
 import QtQuick.Controls.Universal 2.3
 import QtQuick.Layouts 1.14
-import io.home.essentials 1.0
+import home.NeverForgetHydra 1.0
 import QtQuick.Controls.Material 2.3
 
 ScrollView {

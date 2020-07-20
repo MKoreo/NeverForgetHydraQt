@@ -7,13 +7,13 @@
 class ComboBoxNamesModel : public QAbstractListModel
 {
     Q_OBJECT
-    Q_PROPERTY(QString g_role READ role WRITE setRole)
+    Q_PROPERTY(QString role READ role WRITE setRole)
+
 public:
     enum comboRoles {
         costCenterRole = Qt::UserRole + 1,
         projectRole,
-        subjectRole,
-        minutesRole
+        subjectRole
     };
 
     explicit ComboBoxNamesModel(QObject *parent = nullptr);
@@ -24,16 +24,14 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    Q_INVOKABLE void insert(QString value, int role);
-
+    Q_INVOKABLE void insert(QString value);
+    Q_INVOKABLE void renew();
 
     QString role();
     void setRole(QString role);
 
 private:
-    QVector<QString> m_costCenters;
-    QVector<QString> m_projects;
-    QVector<QString> m_subjects;
+    QVector<QString> m_items;
 
 public:
     int g_MAX_HISTORY = 100;

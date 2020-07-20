@@ -1,5 +1,5 @@
 TARGET = NeverForgetHydraQt
-QT += quick qml quickcontrols2
+QT += widgets quick qml quickcontrols2
 
 CONFIG += c++14
 

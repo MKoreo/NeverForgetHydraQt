@@ -13,5 +13,8 @@
         <file>FeedbackDialog.qml</file>
         <file>ChangelogDialog.qml</file>
     </qresource>
-    <qresource prefix="/images"/>
+    <qresource prefix="/images">
+        <file>hourglas.png</file>
+        <file>hourglas.ico</file>
+    </qresource>
 </RCC>

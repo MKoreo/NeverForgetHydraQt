@@ -50,7 +50,6 @@ bool Diary::removeRecord(const Record* rec){
 }
 
 void Diary::sort(){
-
     // Bounds are a records
     QList<Record*> toBeDeleted = { new Record(), new Record(), new Record(), new Record()};
     Record* earliest = toBeDeleted.at(0);

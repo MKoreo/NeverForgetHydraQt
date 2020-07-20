@@ -12,8 +12,16 @@ FileDialog {
 
     nameFilters: [ "XML files (*.xml)", "All files (*)" ]
 
+    property string path: "value";
     onAccepted: {
-        _backend.loadDiary(_openFileDialog.fileUrl);
+        _backend.path = _openFileDialog.fileUrl;
+        _backend.loadDiary();
+
+        _cbCostCenterModel.renew();
+        _cbProjectModel.renew();
+        _cbSubjetModel.renew();
+
+        _dataGridViewModel.refresh(_backend.date);
     }
     onRejected: {
         console.log("Canceled")
