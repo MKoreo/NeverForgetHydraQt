@@ -8,14 +8,11 @@ Rectangle {
     id: _toolbar
     color: Material.accent
 
+
     property int foldedDateWidth: 75
     property int unfoldedDateWidth: 140
     property int edgeMargin: 7
     anchors.fill: parent
-
-    BackEnd {
-        id: _backend
-    }
 
     RowLayout{
         Material.accent: Material.background
@@ -26,7 +23,7 @@ Rectangle {
             Material.foreground: Material.background
             id: _tfDate
             Layout.margins: edgeMargin
-            text: _backend.date.substring(5,10)
+            text: BackEnd.date.substring(5,10)
             leftPadding: 0
             topPadding: 0
             Layout.fillHeight: true
@@ -64,28 +61,28 @@ Rectangle {
                     if (wheel.angleDelta.y > 0) {
                         // Mousewheel up
                         if (wheel.modifiers == Qt.NoModifier){
-                            _backend.increaseDate(0);
+                            BackEnd.increaseDate(0);
                         } else if (wheel.modifiers == Qt.ControlModifier){
-                            _backend.increaseDate(1);
+                            BackEnd.increaseDate(1);
                         } else {
-                            _backend.increaseDate(2);
+                            BackEnd.increaseDate(2);
                         }
                     } else {
                         // Mousewheel down
                         if (wheel.modifiers == Qt.NoModifier){
-                            _backend.decreaseDate(0);
+                            BackEnd.decreaseDate(0);
                         } else if (wheel.modifiers == Qt.ControlModifier){
-                            _backend.decreaseDate(1);
+                            BackEnd.decreaseDate(1);
                         } else {
-                            _backend.decreaseDate(2);
+                            BackEnd.decreaseDate(2);
                         }
                     }
-                    _tfDate.text = _backend.date
-                    _dataGridViewModel.refresh(_backend.date)
+                    _tfDate.text = BackEnd.date
+                    _dataGridViewModel.refresh(BackEnd.date)
                 }
             }
 
-            onActiveFocusChanged: if(state == "unfolded") { state = "folded";  _backend.date = text; text = _backend.date.substring(5,10); _dataGridViewModel.refresh(_backend.date);} else { state = "unfolded"; text = _backend.date}
+            onActiveFocusChanged: if(state == "unfolded") { state = "folded";  BackEnd.date = text; text = BackEnd.date.substring(5,10); _dataGridViewModel.refresh(BackEnd.date);} else { state = "unfolded"; text = BackEnd.date}
 
 
         }
@@ -139,7 +136,7 @@ Rectangle {
                     cancelling = false
                 } else {
                     // TO DO: Handle new text
-                    //_backend.costCenter = editText
+                    //BackEnd.costCenter = editText
                     if(editText != "" && editText != currentText){
                         _cbCostCenterModel.insert(_cbCostCenter.editText);
                     }
@@ -186,7 +183,7 @@ Rectangle {
                     cancelling = false
                 } else {
                     // TO DO: Handle new text
-                    //_backend.project = editText
+                    //BackEnd.project = editText
                     if(editText != "" && editText != currentText){
                         _cbProjectModel.insert(_cbProject.editText);
                     }
@@ -232,7 +229,7 @@ Rectangle {
                     cancelling = false
                 } else {
                     // TO DO: Handle new text
-                    //_backend.subject = editText
+                    //BackEnd.subject = editText
                     if(editText != "" && editText != currentText){
                         _cbSubjetModel.insert(_cbSubject.editText);
                     }
@@ -251,12 +248,12 @@ Rectangle {
             Layout.fillHeight: true
             Layout.margins: edgeMargin
             onClicked: {
-                _backend.costCenter = _cbCostCenter.currentText;
-                _backend.project = _cbProject.currentText;
-                _backend.subject = _cbSubject.currentText;
-                _backend.minutes = _sbTime.value;
-                _backend.addRecord();
-                _dataGridViewModel.refresh(_backend.date);
+                BackEnd.costCenter = _cbCostCenter.currentText;
+                BackEnd.project = _cbProject.currentText;
+                BackEnd.subject = _cbSubject.currentText;
+                BackEnd.minutes = _sbTime.value;
+                BackEnd.addRecord();
+                _dataGridViewModel.refresh(BackEnd.date);
             }
         }
     }

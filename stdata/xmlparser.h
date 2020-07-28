@@ -23,6 +23,8 @@ private:
 public:
   static void READXML(const QString& path, QVector<QVector<QString>> &xml_output);
   static void WRITEXML(const QString &path, const QVector<QVector<QString>> &xml_input);
+  static void READSETTINGS(QVector<QVector<QString>> &xml_output);
+  static void WRITESETTINGS(const QVector<QVector<QString>> &xml_input);
 };
 
 #endif // XMLPARSER_H

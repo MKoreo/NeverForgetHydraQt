@@ -1,7 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.5
 import QtQuick.Layouts 1.14
-import home.NeverForgetHydra 1.0
+import home.NeverForgetHydra 1.0 as NFH
 import QtQuick.Controls.Material 2.12
 import "qrc:///dialogs"
 import Qt.labs.platform 1.1 as Labs
@@ -15,29 +15,25 @@ ApplicationWindow {
     width: 1200
     height: 550
 
-    Material.theme: Material.Dark
+    Material.theme: Material.Light
 
-    // Connection
-    BackEnd {
-        id: _backend
-    }
-
-    ComboBoxNamesModel {
+    // Models used
+    NFH.ComboBoxNamesModel {
         id: _cbCostCenterModel
         role: "costCenter"
     }
 
-    ComboBoxNamesModel {
+    NFH.ComboBoxNamesModel {
         id: _cbProjectModel
         role: "project"
     }
 
-    ComboBoxNamesModel {
+    NFH.ComboBoxNamesModel {
         id: _cbSubjetModel
         role: "subject"
     }
 
-    DatagridViewModel {
+    NFH.DatagridViewModel {
         id: _dataGridViewModel
     }
 
@@ -50,7 +46,7 @@ ApplicationWindow {
             Action { text: qsTr("&Open...");    onTriggered: _openFileDialog.open();}
             Action { text: qsTr("Save &As..."); onTriggered: _saveFileDialog()}
             MenuSeparator { }
-            Action { text: qsTr("&Hydra");      onTriggered: _backend.openHydra(); }
+            Action { text: qsTr("&Hydra");      onTriggered: BackEnd.openHydra(); }
             Action { text: qsTr("&Quit");       onTriggered: Qt.callLater(Qt.quit)}
         }
 
@@ -91,6 +87,7 @@ ApplicationWindow {
 
     ToolBar {
         id: _mainToolBar
+        enabled: false;
         rightPadding: 0
         leftPadding: 0
         height: 50
@@ -241,7 +238,7 @@ ApplicationWindow {
                     color: Material.buttonDisabledColor
                     Button {
                         anchors.fill: parent
-                        onClicked: popup.open()
+                        //onClicked:
                     }
                 }
             }
@@ -249,51 +246,60 @@ ApplicationWindow {
         }
     }
 
-    Item {
-        //background statusbar
-        id: _status
-        height: popup.height
-        width: popup.width
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        anchors.margins: 10
 
+    // Show notifications
+    Connections {
+        target: BackEnd
+        onRequestNotification: func_ShowNotification(m_title, m_content, m_important, m_critical)
 
-
-        Popup {
-            id: popup
-            modal: false
-            focus: false
-
-            Material.background: Material.accent
-
-
-            Column {
-                spacing: 2
-                Text {
-                    id: _popupTitle
-                    text: "Record has been altered"
-                    font.bold: true
-                    font.pointSize: 12
-                    color: _root.Material.background
-                }
-
-                Text {
-                    id: _popupContent
-                    text: "The minutes have been increased by 30."
-                    font.pointSize: 10
-                    color: _root.Material.background
-                }
-            }
-            closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutsideParent
+        function func_ShowNotification(m_title, m_content, m_important, m_critical){
+            _notification.notificationTitle = m_title
+            _notification.notificationContent = m_content
+            _notification.notificationImportant = m_important
+            _notification.notificationCritical = m_critical
+            _notification.open();
         }
+    }
 
+    Popup {
+        id: _notification
+
+        x: Math.round((parent.width - width) - 10)
+        y: Math.round((parent.height - height) - 10)
+
+        property string notificationTitle : ""
+        property string notificationContent : ""
+        property bool notificationImportant: false
+        property bool notificationCritical: false
+
+        modal: notificationImportant
+        focus: false
+
+
+        Material.background: if(notificationCritical){ Material.Red } else { Material.accent }
+
+        Column {
+            spacing: 2
+            Text {
+                id: _popupTitle
+                text: _notification.notificationTitle
+                font.bold: true
+                font.pointSize: 10
+                color: _root.Material.background
+            }
+
+            Text {
+                id: _popupContent
+                text: _notification.notificationContent
+                font.pointSize: 8
+                color: _root.Material.background
+            }
+        }
+        closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
     }
 
     AboutDialog {
         id: _aboutDialog
-
-
     }
 
     NewDialog {

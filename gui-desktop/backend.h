@@ -8,6 +8,7 @@
 #include "diary.h"
 #include "record.h"
 #include "comboBoxNamesModel.h"
+#include "settings.h"
 
 // Open Url
 #include <QDesktopServices>
@@ -26,7 +27,8 @@ class BackEnd : public QObject
     Q_PROPERTY(QString minutes WRITE setMinutes NOTIFY minutesChanged);
 
 public:
-    explicit BackEnd(QObject *parent = nullptr);
+    // If method 1 connection used, this must be explicit
+    BackEnd(QObject *parent, Settings *settings);
 
     // Current working path -> QProperty
     QString getPath() const;
@@ -50,6 +52,7 @@ signals:    // Signals back to the GUI to update something
     void projectChanged();
     void subjectChanged();
     void minutesChanged();
+    void requestNotification(QString m_title, QString m_content, bool m_important, bool m_critical) const;
 
 public slots:
     // Functions that can be called from QML & connected to signals
@@ -85,6 +88,9 @@ private:
     QString m_project;
     QString m_subject;
     QString m_minutes;
+
+    // Settings
+    Settings *m_settings;
 
 
 };

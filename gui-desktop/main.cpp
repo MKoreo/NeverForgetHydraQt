@@ -9,9 +9,10 @@
 
 #include "datagridViewModel.h"
 #include "comboBoxNamesModel.h"
+#include "settings.h"
 
 int main(int argc, char *argv[]) {
-    // Force a certain style
+    // Force a certain style, instead of qtquickcontrols2.conf
     // QQuickStyle::setStyle("Default");
     // QQuickStyle::setStyle("Universal");
     // QQuickStyle::setStyle("Fusion");
@@ -20,7 +21,7 @@ int main(int argc, char *argv[]) {
     QApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
 
     // Create the QGuiAplication and set settings
-    // 2020-07-19: Changed to QApplication (include widgets in .pro)
+    // 2020-07-19: Changed to QApplication (include widgets in .pro) for trayicon
     QApplication app(argc, argv);
 
     // -- Set app settings
@@ -32,23 +33,32 @@ int main(int argc, char *argv[]) {
     // Doesn't work, TODO:
     app.setWindowIcon(QIcon("qrc:/images/hourglas.ico"));
 
-    // Register types (connect qml <> c++)
+    // Register types (connect qml <> c++ method 1)
     // -- Backend on GUI
-    qmlRegisterType<BackEnd>("home.NeverForgetHydra", 1, 0, "BackEnd");
-
-    // -- Models that provide data to GUI
-    // ---- Comboboxes
+    //qmlRegisterType<BackEnd>("home.NeverForgetHydra", 1, 0, "BackEnd");
+    // -- Toolbar Comboboxes
     qmlRegisterType<ComboBoxNamesModel>("home.NeverForgetHydra", 1, 0, "ComboBoxNamesModel");
-    // ---- DataGrid
+    // -- Workspace DataGrid
     qmlRegisterType<DatagridViewModel>("home.NeverForgetHydra", 1, 0, "DatagridViewModel");
 
     // Start QML app engine
     QQmlApplicationEngine engine;
+    // Contextproperties (connect qml <> c++ method 2)
+    // - QOBJECT derriving class, directly connected to qml, instantiated in c++.
+    Settings settings;  // Class to hold all application settings
+    engine.rootContext()->setContextProperty("Settings", &settings);
+
+    BackEnd backend(nullptr, &settings);
+    engine.rootContext()->setContextProperty("BackEnd", &backend);
+
+    // Load QML app engine
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     // Do some weird stuff
     QObject *topLevel = engine.rootObjects().value(0);
     QQuickWindow *window = qobject_cast<QQuickWindow *>(topLevel);
+
+
 
     // Show Window + eternal loop
     window->show();

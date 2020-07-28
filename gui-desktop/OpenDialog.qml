@@ -14,14 +14,16 @@ FileDialog {
 
     property string path: "value";
     onAccepted: {
-        _backend.path = _openFileDialog.fileUrl;
-        _backend.loadDiary();
+        BackEnd.path = _openFileDialog.fileUrl;
+        BackEnd.loadDiary();
 
         _cbCostCenterModel.renew();
         _cbProjectModel.renew();
         _cbSubjetModel.renew();
 
-        _dataGridViewModel.refresh(_backend.date);
+        _dataGridViewModel.refresh(BackEnd.date);
+
+        _mainToolBar.enabled = true;
     }
     onRejected: {
         console.log("Canceled")

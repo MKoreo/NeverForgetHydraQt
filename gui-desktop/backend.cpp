@@ -1,10 +1,11 @@
 #include "backend.h"
 
-BackEnd::BackEnd(QObject *parent) :
+BackEnd::BackEnd(QObject *parent, Settings *settings) :
     QObject(parent)
 {
     // Upon creating, fill in current date
     setCurrentDate();
+    m_settings = settings;
 }
 
 // ---- MenuItems
@@ -22,15 +23,18 @@ void BackEnd::newDiary(QString path){
 void BackEnd::loadDiary(){
     newDiary(m_path);
     Diary::instance().loadDiary(m_path);
+    requestNotification("Diary Loaded", "Succesfully loaded diary: " + m_path, true, false);
 }
 
 void BackEnd::saveDiary(){
     Diary::instance().saveDiary(m_path);
+    requestNotification("Diary Saved", "Succesfully saved diary: " + m_path, true, false);
 }
 
 void BackEnd::openHydra() const {
     // TODO: Change url to realy HYDRA Url
     QDesktopServices::openUrl(QUrl("/home", QUrl::TolerantMode));
+    requestNotification("Never Forget Hydra opened", "Please check your webbrowser.", true, false);
 }
 
 // ---- Methods
@@ -38,8 +42,9 @@ void BackEnd::addRecord(){
     if (validateMembers()){
         Diary::instance().addRecord(new Record(QDate::currentDate().toString("yyyy-MM-dd"), m_date, m_costCenter, m_project, m_subject, m_minutes));
         Diary::instance().saveDiary(m_path);
+        emit requestNotification("SUCCESS", "Record has been added to the Diary.", false, false);
     } else {
-        // TODO: Popup that something isn't good yet
+        emit requestNotification("FAILED to add record", "One of the required fiels hasn't been filled in. Please check.", false, true);
     }
 }
 

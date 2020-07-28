@@ -13,7 +13,8 @@ FileDialog {
     nameFilters: [ "XML files (*.xml)", "All files (*)" ]
 
     onAccepted: {
-        _backend.saveDiary(_saveFileDialog.fileUrl);
+        BackEnd.saveDiary(_saveFileDialog.fileUrl);
+
     }
     onRejected: {
         console.log("Canceled")

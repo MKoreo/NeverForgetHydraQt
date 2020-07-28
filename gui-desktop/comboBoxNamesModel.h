@@ -7,7 +7,7 @@
 class ComboBoxNamesModel : public QAbstractListModel
 {
     Q_OBJECT
-    Q_PROPERTY(QString role READ role WRITE setRole)
+    Q_PROPERTY(QString role READ role WRITE setRole);
 
 public:
     enum comboRoles {

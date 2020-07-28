@@ -10,7 +10,8 @@ FileDialog {
     selectFolder: false
     nameFilters: [ "XML files (*.xml)", "All files (*)" ]
     onAccepted: {
-        _backend.newDiary(_newFileDialog.fileUrl);
+        BackEnd.newDiary(_newFileDialog.fileUrl);
+        _mainToolBar.enabled = true;
     }
     onRejected: {
         console.log("Canceled")

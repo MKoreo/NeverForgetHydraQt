@@ -18,7 +18,8 @@ SOURCES += \
         backend.cpp \
         comboBoxNamesModel.cpp \
         datagridViewModel.cpp \
-        main.cpp
+        main.cpp \
+        settings.cpp
 
 RESOURCES += \
     qml.qrc
@@ -34,7 +35,8 @@ QML_DESIGNER_IMPORT_PATH =
 HEADERS += \
     backend.h \
     comboBoxNamesModel.h \
-    datagridViewModel.h
+    datagridViewModel.h \
+    settings.h
 
 
 
