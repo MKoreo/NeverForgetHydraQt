@@ -2,23 +2,25 @@
 
 XmlParser& XmlParser::instance()
 {
-    qDebug() << "XmlParser Instance accessed";
+    qDebug() << "-> SINGLETON USED: XmlParser Instance accessed";
     static XmlParser singleton;
     return singleton;
 }
 
 XmlParser::~XmlParser(){
-    qDebug() << "XmlParser Instance destroyed";
+    qDebug() << "-> SINGLETON DESTROYED: XmlParser Instance destroyed";
 }
 
 void XmlParser::READXML(const QString& path, QVector<QVector<QString>> &xml_output){
-    qDebug() << "Attempting to read XML file @" << path;
+    qDebug() << "----- READING DIARY -----";
+    qDebug() << "Path: " << path;
+
     // We change the path to file
     QFile file(path);
 
     // Check if file is there and can be opened
     if(!file.open(QFile::ReadOnly | QFile::Text)){
-        qDebug() << "Failed to read file due to error: " << file.errorString();
+        qDebug() << "FAILURE: Could not read diary due to: " << file.errorString();
         exit(0);
     }
 
@@ -31,9 +33,7 @@ void XmlParser::READXML(const QString& path, QVector<QVector<QString>> &xml_outp
         // First element has to be Diary
         if (reader.name() == "diary"){
 
-
             while(reader.readNextStartElement()){
-
                 // For all records
                 if(reader.name() == "record"){
                     // Reading can be any order, but writing and storing internal:
@@ -69,11 +69,10 @@ void XmlParser::READXML(const QString& path, QVector<QVector<QString>> &xml_outp
                     QVector<QString> record;
                     foreach(QString str, rec){
                         record.append(str);
-                        //qDebug(qPrintable(*str));
                     }
                     xml_output.append(record);
+
                     qDebug() << "Record read: " << record.at(0) << record.at(1) << record.at(2) << record.at(3) << record.at(4) << record.at(5);
-                    //qDebug(qPrintable(addDate + recordDate + costCenter + project + subject + minutes));
 
                     reader.readNextStartElement(); // Going up a level
                 }
@@ -90,9 +89,12 @@ void XmlParser::READXML(const QString& path, QVector<QVector<QString>> &xml_outp
 }
 
 void XmlParser::WRITEXML(const QString& path, const QVector<QVector<QString>> &xml_input) {
+    qDebug() << "----- WRITING DIARY -----";
+    qDebug() << "Path: " << path;
+
     QFile file(path);
     if(!file.open(QFile::WriteOnly| QFile::Text)){
-        qDebug() << "Cannot write file" << file.errorString();
+        qDebug() << "FAILURE: Could not write diary due to: " << file.errorString();
         exit(0);
     }
 
@@ -123,8 +125,11 @@ void XmlParser::WRITEXML(const QString& path, const QVector<QVector<QString>> &x
 void XmlParser::WRITESETTINGS(const QVector<QVector<QString>> &xml_input) {
     QFile file("./settings.ini");
 
+    qDebug() << "----- WRITING SETTEING -----";
+    qDebug() << "Path: " << "./settings.ini";
+
     if(!file.open(QFile::WriteOnly| QFile::Text)){
-        qDebug() << "Cannot write file" << file.errorString();
+        qDebug() << "FAILURE: Could not write settings due to:" << file.errorString();
         exit(0);
     }
 
@@ -145,13 +150,15 @@ void XmlParser::WRITESETTINGS(const QVector<QVector<QString>> &xml_input) {
 }
 
 void XmlParser::READSETTINGS(QVector<QVector<QString>> &xml_output){
-    qDebug() << "Attempting to load settings";
+    qDebug() << "----- LOADING SETTINGS -----";
+    qDebug() << "Path: " << "./settings.ini";
+
     // We change the path to file
     QFile file("./settings.ini");
 
     // Check if file is there and can be opened
     if(!file.open(QFile::ReadOnly | QFile::Text)){
-        qDebug() << "Failed to read file due to error: " << file.errorString();
+        qDebug() << "FAILURE: Could not load settings due to: " << file.errorString();
         exit(0);
     }
 

@@ -6,12 +6,57 @@ ComboBoxNamesModel::ComboBoxNamesModel(QObject *parent)
 
 }
 
+void ComboBoxNamesModel::setSettings(Settings *settings){
+    m_settings = settings;
+    connect(settings, &Settings::s_filterDropdownChanged, this, &ComboBoxNamesModel::renew);
+    //connect(settings, &Settings::s_filterTypeChanged, this, &ComboBoxNamesModel::renew);
+}
+
+Settings* ComboBoxNamesModel::settings(){
+    return m_settings;
+}
+
+void ComboBoxNamesModel::setCurrentCostCenter(QString value){
+    currentCostCenter = value;
+}
+void ComboBoxNamesModel::setCurrentProject(QString value){
+    currentProject = value;
+}
+void ComboBoxNamesModel::setCurrentSubject(QString value){
+    currentSubject = value;
+}
+
 void ComboBoxNamesModel::renew(){
-    QVector<Record*> records = Diary::instance().getRecords();
+    // Fetch sorted records in diary
+    Diary::instance().sort();   // Most recent first
+    QVector<Record*> records;
+
+    bool recordsLoaded = false;
+
+    if (m_settings->filterDropdown()){
+        if (currentCostCenter != ""){
+            if (currentProject != "") {
+              records = Diary::instance().getRecordsByProject(currentCostCenter, currentProject);
+              recordsLoaded = true;
+            } else {
+                records = Diary::instance().getRecordsByCostCenter(currentCostCenter);
+                recordsLoaded = true;
+            }
+        }
+    }
+
+    if (!recordsLoaded){
+        records = Diary::instance().getRecords();
+    }
+
+    // Clear current item list
+    beginRemoveRows(QModelIndex(), 0, m_items.count()-1);
+    m_items.clear();
+    endRemoveRows();
 
     int c = 0;
     foreach(Record* rec, records){
-        if(++c <= g_MAX_HISTORY){
+        if(++c <= m_settings->historyTicks()){
 
             if (g_role == "costCenter") {
                 if(!m_items.contains(rec->costCenter())){
@@ -34,18 +79,19 @@ void ComboBoxNamesModel::renew(){
             } else {
                 break;
             }
+        } else {
+            break;
         }
     }
-    beginInsertRows(QModelIndex(), 0, c-1);
+
+    beginInsertRows(QModelIndex(), 0, m_items.count()-1);
     endInsertRows();
-
-
 }
 
 int ComboBoxNamesModel::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return m_items.count();
+    return (m_items.count() > m_settings->historyTicks() ? m_settings->historyTicks() : m_items.count());
 }
 
 QVariant ComboBoxNamesModel::data(const QModelIndex &index, int role) const

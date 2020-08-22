@@ -4,12 +4,15 @@
 
 Settings::Settings(QObject *parent) : QObject(parent)
 {
-    // 1. Attempt to load settings.ini
+    // Attempt to load settings.ini
     if (QFile::exists("./settings.ini")) {
-        qDebug() << "settings.ini found, attempting to load...";
+        qDebug() << "DEBUG: Settings.ini found";
         loadSettings();
+
     } else {
-        // 2. If no settings found, load defaults
+        qDebug() << "DEBUG: Settings.ini not found";
+        qDebug() << "DEBUG: Restoring default settings";
+
         m_timer = 30;
         m_minimizeOnAdd = 1;
         m_filterDropdown = 1;
@@ -17,9 +20,15 @@ Settings::Settings(QObject *parent) : QObject(parent)
         m_historyTicks = 5;
         m_startWithOs = 0;
         m_sendStacktrace = 1;
-        // 3. Save to disk
+        m_theme = ThemeSetting::Light;
+        m_colour = ColourSetting::Red;
+
         writeSettings();
     }
+}
+
+Settings::~Settings(){
+        writeSettings();
 }
 
 void Settings::loadSettings(){
@@ -28,16 +37,15 @@ void Settings::loadSettings(){
 
     m_timer = settings[0][1].toInt();
     m_minimizeOnAdd = settings[1][1].toInt();
-
     m_filterDropdown = settings[2][1].toInt();
-
     m_filterType = settings[3][1].toInt();
-
     m_historyTicks = settings[4][1].toInt();
-
     m_startWithOs = settings[5][1].toInt();
-
     m_sendStacktrace = settings[6][1].toInt();
+    m_theme = (ThemeSetting)(settings[7][1].toInt());
+    m_colour = (ColourSetting)(settings[8][1].toInt());
+    emit s_themeChanged();
+    emit s_colourChanged();
 }
 
 void Settings::writeSettings(){
@@ -71,6 +79,14 @@ void Settings::writeSettings(){
     setting.clear();
     setting.append("sendStacktrace");
     setting.append(QString::number(m_sendStacktrace));
+    settings.append(setting);
+    setting.clear();
+    setting.append("theme");
+    setting.append(QString::number(m_theme));
+    settings.append(setting);
+    setting.clear();
+    setting.append("colour");
+    setting.append(QString::number(m_colour));
     settings.append(setting);
     setting.clear();
 
@@ -107,21 +123,24 @@ bool Settings::sendStacktrace()const{
     return m_sendStacktrace;
 }
 
+int Settings::colour() const{
+    return (int)m_colour;
+}
+
+int Settings::theme() const{
+    return m_theme;
+}
 // Setters
 void Settings::setTimer(const int timer){
     qDebug() << "setTimer value from " <<  QString::number(m_timer) << " to " << QString::number(timer);
     m_timer = timer;
-
-}
-
-void Settings::setMinimizeOnAdd(bool check){
-    qDebug() << "setMinimizeOnAdd value from " <<  QString::number(m_minimizeOnAdd) << " to " << QString::number(check);
-    m_minimizeOnAdd = check;
+    emit s_timerChanged();
 }
 
 void Settings::setFilterDropDown(bool check){
     qDebug() << "setFilterDropDown value from " <<  QString::number(m_filterDropdown) << " to " << QString::number(check);
     m_filterDropdown = check;
+    emit s_filterDropdownChanged();
 }
 
 void Settings::setFilterType(int type){
@@ -129,18 +148,22 @@ void Settings::setFilterType(int type){
 
     // Check QuickSettings.qml to match model options
     m_filterType = type;
+
+    emit s_filterTypeChanged();
 }
 
 void Settings::setHistoryTicks(int ticks){
     qDebug() << "setHistoryTicks value from " <<  QString::number(m_historyTicks) << " to " << QString::number(ticks);
 
     m_historyTicks = ticks;
+    emit s_historyTicksChanged();
 }
 
 void Settings::setStartWithOs(bool check){
     qDebug() << "setStartWithOs value from " <<  QString::number(m_startWithOs) << " to " << QString::number(check);
 
     m_startWithOs = check;
+    emit s_startWithOsChanged();
 }
 
 void Settings::setSendStacktrace(bool check){
@@ -149,3 +172,17 @@ void Settings::setSendStacktrace(bool check){
     m_sendStacktrace = check;
 }
 
+void Settings::setMinimizeOnAdd(bool check){
+    qDebug() << "setMinimizeOnAdd value from " <<  QString::number(m_minimizeOnAdd) << " to " << QString::number(check);
+    m_minimizeOnAdd = check;
+}
+
+void Settings::setTheme(int& theme){
+    m_theme = (ThemeSetting)theme;
+    emit s_themeChanged();
+}
+
+void Settings::setColour(int& colour){
+    m_colour = (ColourSetting)colour;
+    emit s_colourChanged();
+}

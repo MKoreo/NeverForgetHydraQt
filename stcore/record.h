@@ -19,7 +19,7 @@ class Record
 public:
   Record();
   Record(QDate creationDate, QDate recordDate, QString costCenter, QString project, QString subject, int minutes);
-  Record(const QString &creationDate, const QString &recordDate, const QString &costCenter, const QString &project, const QString &subject,  const QString &minutes);
+  Record(const QString creationDate, const QString recordDate, const QString costCenter, const QString project, const QString subject,  const QString minutes);
 
   // Compare record to other record
   EqualityGrade compare(const Record& rec);
@@ -44,6 +44,8 @@ public: // Getters - Setters
   int minutes() const;
 
   void addMinutes(int minutes);
+
+  static bool validateParameters(const QString params[]);
 
 private:
   QDate m_creationDate;

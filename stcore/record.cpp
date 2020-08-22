@@ -6,9 +6,9 @@ Record::Record()
 
 }
 
-Record::Record(const QString &creationDate, const QString &recordDate, const QString &costCenter, const QString &project, const QString &subject,  const QString &minutes){
-    m_creationDate = QDate::fromString(creationDate,"yyyy-MM-d");
-    m_recordDate = QDate::fromString(recordDate,"yyyy-MM-d");
+Record::Record(const QString creationDate, const QString recordDate, const QString costCenter, const QString project, const QString subject,  const QString minutes){
+    m_creationDate = QDate::fromString(creationDate,"yyyy-MM-dd");
+    m_recordDate = QDate::fromString(recordDate,"yyyy-MM-dd");
     m_costCenter = costCenter;
     m_project = project;
     m_subject = subject;
@@ -92,4 +92,26 @@ EqualityGrade Record::compare(const Record& rec) {
     }
 
     return grade;
+}
+
+bool Record::validateParameters(const QString *params){
+    // Determines if the parameters to create a record are correct
+    // TODO: Improve validation
+
+    // Check date
+    if(!(QDate::fromString(params[0],"yyyy-MM-dd").isValid())){
+        return false;
+    }
+
+    // Check minutes
+    if (params[1].toInt() < 1) {
+        return false;
+    }
+
+    // Check costcenter, project, subject
+    if (params[2].count() <= 0 && params[3].count() <= 0 && params[4].count() <= 0){
+        return false;
+    }
+
+    return true;
 }

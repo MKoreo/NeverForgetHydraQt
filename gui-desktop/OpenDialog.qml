@@ -19,7 +19,7 @@ FileDialog {
 
         _cbCostCenterModel.renew();
         _cbProjectModel.renew();
-        _cbSubjetModel.renew();
+        _cbSubjectModel.renew();
 
         _dataGridViewModel.refresh(BackEnd.date);
 

@@ -9,6 +9,7 @@
 #include "record.h"
 #include "comboBoxNamesModel.h"
 #include "settings.h"
+#include "popuptimer.h"
 
 // Open Url
 #include <QDesktopServices>
@@ -18,7 +19,7 @@ class BackEnd : public QObject
 {
     Q_OBJECT
 
-    // Q_PROPERTY 's -> Create a variable that has getter & setter + emits signal when changed
+    // Q_PROPERTY 's -> Create a variable that has getter & setter + emits signal when changed (signal connected to qml)
     Q_PROPERTY(QString path READ getPath WRITE setPath);
     Q_PROPERTY(QString date READ getDate WRITE setDate NOTIFY DateChanged);
     Q_PROPERTY(QString costCenter WRITE setCostCenter NOTIFY costCenterChanged);
@@ -44,6 +45,8 @@ public:
     void setSubject(const QString subject);
     void setMinutes(const QString minutes);
 
+    PopupTimer timer();
+
 signals:    // Signals back to the GUI to update something
 
     // QProperty's -> handle date, minutes + comboboxes
@@ -53,6 +56,9 @@ signals:    // Signals back to the GUI to update something
     void subjectChanged();
     void minutesChanged();
     void requestNotification(QString m_title, QString m_content, bool m_important, bool m_critical) const;
+
+    void s_timerPassed();
+    void s_minutePassed(QString minutesLeft);
 
 public slots:
     // Functions that can be called from QML & connected to signals
@@ -75,6 +81,16 @@ public slots:
     void increaseDate(const int &type);
     void decreaseDate(const int &type);
 
+    // Connected to settingschanged Signals
+    void timerChanged();
+    void timerReset();
+    void filterDropdownChanged();
+    void filterTypeChanged();
+    void historyTicksChanged();
+    void startWithOsChanged();
+
+    // Retreive settings to parse to qml objects
+    Q_INVOKABLE Settings* settings();
 private:
     // Validate if contents of m_ vars needed to create record are valid
     bool validateMembers() const;
@@ -89,10 +105,10 @@ private:
     QString m_subject;
     QString m_minutes;
 
+    PopupTimer *m_popupTimer;
+
     // Settings
     Settings *m_settings;
-
-
 };
 
 #endif // BACKEND_H

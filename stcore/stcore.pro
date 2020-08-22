@@ -19,12 +19,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     diary.cpp \
     diarydao.cpp \
+    popuptimer.cpp \
     record.cpp \
     stcore.cpp
 
 HEADERS += \
     diary.h \
     diarydao.h \
+    popuptimer.h \
     record.h \
     stcore.h
 

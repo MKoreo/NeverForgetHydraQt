@@ -1,6 +1,7 @@
 #include "stcore.h"
 #include "xmlparser.h"
 
+
 StCore& StCore::instance()
 {
     static StCore singleton;

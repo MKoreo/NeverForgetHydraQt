@@ -12,24 +12,39 @@ ApplicationWindow {
 
     // Dimensions
     visible: true
-    width: 1200
-    height: 550
+    minimumHeight: 450
+    minimumWidth: 1000
 
-    Material.theme: Material.Light
+    Connections {
+        target: Settings
+
+        function onS_themeChanged(){
+            _root.Material.theme = (Settings.theme == 0 ? Material.Light : Material.Dark);
+        }
+
+        function onS_colourChanged(){
+            _root.Material.accent = (Settings.colour == 0 ? Material.Red : (Settings.colour == 1 ? Material.Blue : Material.Green));
+        }
+    }
+
+
 
     // Models used
     NFH.ComboBoxNamesModel {
         id: _cbCostCenterModel
+        settings: Settings
         role: "costCenter"
     }
 
     NFH.ComboBoxNamesModel {
         id: _cbProjectModel
+        settings: Settings
         role: "project"
     }
 
     NFH.ComboBoxNamesModel {
-        id: _cbSubjetModel
+        id: _cbSubjectModel
+        settings: Settings
         role: "subject"
     }
 
@@ -53,7 +68,7 @@ ApplicationWindow {
         Menu {
             title: qsTr("&Preferences");
             Action { text: qsTr("Settings");    onTriggered: _quickSettings.open()}
-            Action { text: qsTr("Theme");       onTriggered: _root.Material.theme = (_root.Material.theme == Material.Light ? Material.Dark : Material.Light)}
+            //Action { text: qsTr("Theme");       onTriggered: _root.Material.theme = (_root.Material.theme == Material.Light ? Material.Dark : Material.Light)}
         }
 
         Menu {
@@ -247,12 +262,19 @@ ApplicationWindow {
     }
 
 
-    // Show notifications
+    // Show notifications, popup
     Connections {
         target: BackEnd
-        onRequestNotification: func_ShowNotification(m_title, m_content, m_important, m_critical)
 
-        function func_ShowNotification(m_title, m_content, m_important, m_critical){
+        function onS_minutePassed(minutesLeft){
+            _tray.minutesLeft = minutesLeft;
+        }
+
+        function onS_timerPassed(){
+            _root.show();
+        }
+
+        function onRequestNotification(m_title, m_content, m_important, m_critical){
             _notification.notificationTitle = m_title
             _notification.notificationContent = m_content
             _notification.notificationImportant = m_important
@@ -317,6 +339,10 @@ ApplicationWindow {
 
     Labs.SystemTrayIcon {
         // Needs widgets include
+        id: _tray
+        property string minutesLeft : "Calculating..."
+        tooltip: "NeverForgetHydra\n Time till popup: " + minutesLeft
+
         visible: true
         icon.source: "qrc:/images/hourglas.png"
 

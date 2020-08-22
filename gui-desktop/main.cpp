@@ -51,14 +51,15 @@ int main(int argc, char *argv[]) {
     BackEnd backend(nullptr, &settings);
     engine.rootContext()->setContextProperty("BackEnd", &backend);
 
+
+
+
     // Load QML app engine
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     // Do some weird stuff
     QObject *topLevel = engine.rootObjects().value(0);
     QQuickWindow *window = qobject_cast<QQuickWindow *>(topLevel);
-
-
 
     // Show Window + eternal loop
     window->show();

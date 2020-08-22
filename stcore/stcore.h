@@ -3,7 +3,7 @@
 
 #include <QString>
 #include <QVector>
-
+#include <QDate>
 class StCore
 {
 public:

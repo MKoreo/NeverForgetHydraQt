@@ -100,28 +100,38 @@ Rectangle {
 
         ComboBox {
             id: _cbCostCenter
+
+            // Looks
             Material.foreground: Material.background
-            enabled: true
-            Layout.margins: edgeMargin
-            wheelEnabled: true
-            editable: true
+            font.bold: true
             Layout.fillWidth: true
             implicitWidth: 150
             Layout.fillHeight: true
+            Layout.margins: edgeMargin
+
+            // Modifiers
+            wheelEnabled: true
+            editable: true
+
+            // Data
             textRole: "costCenter"
             model: _cbCostCenterModel
-            // S
-            font.bold: true
-            // Store the previous text for restoring it if we cancel
-            property string oldText
 
-            // Lets us know that the user is cancelling the save
+            // Textedit
+            property string oldText
             property bool cancelling
 
             Keys.onEscapePressed: {
                 // Cancel the save, and deselect the text input
                 cancelling = true
                 focus = false
+            }
+
+            onCurrentIndexChanged: {
+                _cbProjectModel.setCurrentCostCenter(_cbCostCenter.displayText);
+                _cbSubjectModel.setCurrentCostCenter(_cbCostCenter.displayText);
+                _cbProjectModel.renew();
+                _cbSubjectModel.renew();
             }
 
             onActiveFocusChanged: {
@@ -135,40 +145,52 @@ Rectangle {
                     oldText = ""
                     cancelling = false
                 } else {
-                    // TO DO: Handle new text
-                    //BackEnd.costCenter = editText
+                    // Handle new text
                     if(editText != "" && editText != currentText){
-                        _cbCostCenterModel.insert(_cbCostCenter.editText);
+                        oldText = editText;
+                        _cbCostCenterModel.renew();
+                        _cbCostCenter.currentIndex = _cbCostCenter.find(oldText);
+                        oldText = "";
                     }
                 }
             }
+
+
 
 
         }
         ComboBox {
             id: _cbProject
 
+            // Looks
             Material.foreground: Material.background
-            wheelEnabled: true
-            editable: true
-            Layout.margins: edgeMargin
+            font.bold: true
             Layout.fillWidth: true
             implicitWidth: 150
             Layout.fillHeight: true
-            font.bold: true
-            // TBD
+            Layout.margins: edgeMargin
+
+            // Modifiers
+            wheelEnabled: true
+            editable: true
+
+            // Data
             textRole: "project"
             model: _cbProjectModel
-            // Store the previous text for restoring it if we cancel
-            property string oldText
 
-            // Lets us know that the user is cancelling the save
+            // TextEdit
+            property string oldText
             property bool cancelling
 
             Keys.onEscapePressed: {
                 // Cancel the save, and deselect the text input
                 cancelling = true
                 focus = false
+            }
+
+            onCurrentIndexChanged: {
+                _cbSubjectModel.setCurrentProject(_cbProject.displayText);
+                _cbSubjectModel.renew();
             }
 
             onActiveFocusChanged: {
@@ -182,10 +204,13 @@ Rectangle {
                     oldText = ""
                     cancelling = false
                 } else {
-                    // TO DO: Handle new text
-                    //BackEnd.project = editText
+                    // Handle new text
                     if(editText != "" && editText != currentText){
-                        _cbProjectModel.insert(_cbProject.editText);
+                        oldText = editText;
+
+                        _cbProjectModel.renew();
+                        _cbProject.currentIndex = _cbProject.find(oldText)
+                        oldText = "";
                     }
                 }
             }
@@ -193,22 +218,25 @@ Rectangle {
 
         ComboBox {
             id: _cbSubject
-            textRole: "subject"
-            wheelEnabled: true
+
+            // Looks
             Material.foreground: Material.background
-            editable: true
-            Layout.fillHeight: true
-            Layout.margins: edgeMargin
+            font.bold: true
             Layout.fillWidth: true
             implicitWidth: 150
-            implicitHeight: parent.height
-            font.bold: true
-            // TBD
-            model: _cbSubjetModel
-            // Store the previous text for restoring it if we cancel
-            property string oldText
+            Layout.fillHeight: true
+            Layout.margins: edgeMargin
 
-            // Lets us know that the user is cancelling the save
+            // Modifiers
+            wheelEnabled: true
+            editable: true
+
+            // Data
+            model: _cbSubjectModel
+            textRole: "subject"
+
+            // TextEdit
+            property string oldText
             property bool cancelling
 
             Keys.onEscapePressed: {
@@ -228,10 +256,12 @@ Rectangle {
                     oldText = ""
                     cancelling = false
                 } else {
-                    // TO DO: Handle new text
-                    //BackEnd.subject = editText
+                    // Handle new text
                     if(editText != "" && editText != currentText){
-                        _cbSubjetModel.insert(_cbSubject.editText);
+                        oldText = editText;
+                        _cbSubjectModel.renew();
+                        _cbSubject.currentIndex = _cbSubject.find(oldText)
+                        oldText = "";
                     }
                 }
             }

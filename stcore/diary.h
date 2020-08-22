@@ -34,6 +34,8 @@ public:
 
   // checking content
   Record* contains(const Record* rec) const;
+  QVector<Record*> getRecordsByCostCenter(const QString& costCenter);
+  QVector<Record*> getRecordsByProject(const QString& costCenter, const QString& project);
   QVector<Record*> getRecordsByDate(const QDate& date);
   QVector<Record*> getRecordsByDates(const QDate& startDate, const QDate& endDate);
   QVector<Record*> getRecords();

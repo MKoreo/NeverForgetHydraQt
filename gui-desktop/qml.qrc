@@ -16,5 +16,6 @@
     <qresource prefix="/images">
         <file>hourglas.png</file>
         <file>hourglas.ico</file>
+        <file>titlescreen.png</file>
     </qresource>
 </RCC>

@@ -59,6 +59,7 @@ ScrollView {
 
                         Button{
                             text: qsTr("Reset")
+                            onClicked: Settings.s_timerReset()
                         }
 
                         SpinBox {
@@ -70,23 +71,24 @@ ScrollView {
                             to: 60
                             Layout.preferredWidth: 100
                             value: Settings.timer
-                            onValueChanged: {
+                            onValueModified: {
                                 Settings.timer = value;
                             }
+
                         }
                     }
 
                     CheckBox{
                         id: _cbAdd
                         text: "Minimize on adding record"
-                        checked: Settings.minimizeOnAdd
+                        Component.onCompleted: checked = Settings.minimizeOnAdd
                         onCheckedChanged: Settings.minimizeOnAdd = checked
                     }
 
                     CheckBox{
                         id: _cbFilter
                         text: "Filter dropdown lists"
-                        checked: Settings.filterDropdown
+                        Component.onCompleted: checked = Settings.filterDropdown
                         onCheckedChanged: Settings.filterDropdown = checked
                     }
 
@@ -121,10 +123,6 @@ ScrollView {
 
         }
 
-
-
-
-
         Pane {
             Layout.fillWidth: true
             Material.elevation: 1
@@ -141,38 +139,40 @@ ScrollView {
 
                 MenuSeparator { anchors.left: _labelGlobalSettings.left; anchors.right: _labelGlobalSettings.right }
 
-                ColumnLayout{
+
+                RowLayout {
+                    id: _rowView
                     Layout.fillWidth: true
-                    RowLayout {
-                        id: _rowView
-                        Layout.fillWidth: true
 
-                        Label {
-                            id: _historyLabel
-                            text: qsTr("History ticks in lists:")
-                            verticalAlignment: Text.AlignBottom
-                        }
+                    Label {
+                        id: _historyLabel
+                        text: qsTr("History ticks in lists:")
+                        verticalAlignment: Text.AlignBottom
+                    }
 
-                        Rectangle {
-                            Layout.fillWidth: true;
-                        }
+                    Rectangle {
+                        Layout.fillWidth: true;
+                    }
 
-                        SpinBox {
-                            id: _historySpin
-                            wheelEnabled: true
-                            from: 5
-                            stepSize: 1
-                            editable: true
-                            to: 100
-                            Layout.preferredWidth: 100
+                    SpinBox {
+                        id: _historySpin
+                        wheelEnabled: true
+                        from: 1
+                        stepSize: 1
+                        editable: true
+                        to: 100
+                        Layout.preferredWidth: 100
 
-                            value: Settings.historyTicks
-                            onValueChanged: {
-                                Settings.historyTicks = value;
-                            }
+                        value: Settings.historyTicks
+                        onValueModified: {
+                            Settings.historyTicks = value;
+                            _cbCostCenterModel.renew("", "");
+                            _cbProjectModel.renew(_mainToolBar._cbCostCenter.currentValue, "");
+                            _cbSubjectModel.renew(_mainToolBar._cbCostCenter.currentValue, _mainToolBar._cbProject.currentValue);
                         }
                     }
                 }
+
 
                 CheckBox{
                     id: _cbStartup
@@ -203,9 +203,53 @@ ScrollView {
                           }
 
                     Layout.leftMargin: -5
+                    Component.onCompleted: checked = Settings.sendStacktrace
 
-                    checked: Settings.sendStacktrace
                     onCheckedChanged: Settings.sendStacktrace = checked
+                }
+
+
+                RowLayout {
+                    Layout.fillWidth: true
+
+                    Label {
+                        text: qsTr("Theme style and colour:")
+                        verticalAlignment: Text.AlignBottom
+                    }
+
+                    Rectangle {
+                        Layout.fillWidth: true;
+                    }
+
+
+                    ComboBox {
+                        enabled: true
+                        editable: false
+                        Layout.fillWidth: true
+
+                        model: ["Light", "Dark"]
+
+                        currentIndex: Settings.theme
+
+                        onCurrentIndexChanged: {
+                            Settings.theme = currentIndex
+                        }
+
+                        Component.onCompleted: Settings.theme = currentIndex
+                    }
+
+                    ComboBox {
+                        enabled: true
+                        editable: false
+                        Layout.fillWidth: true
+
+                        model: ["Red", "Green", "Blue"]
+
+                        currentIndex: Settings.colour
+                        onCurrentTextChanged: {
+                            Settings.colour = currentIndex
+                        }
+                    }
                 }
             }
         }

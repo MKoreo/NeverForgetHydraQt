@@ -129,6 +129,32 @@ Record* Diary::contains(const Record* rec) const {
     return nullptr;
 }
 
+QVector<Record*> Diary::getRecordsByCostCenter(const QString& costCenter){
+    QVector<Record*> byCostCenter;
+
+    for(int i = 0; i < m_records.count(); i++){
+        if(m_records.at(i)->costCenter() == costCenter){
+            byCostCenter.append(m_records.at(i));
+        }
+    }
+
+    return byCostCenter;
+}
+
+QVector<Record*> Diary::getRecordsByProject(const QString& costCenter, const QString& project){
+    QVector<Record*> byCostCenter = getRecordsByCostCenter(costCenter);
+    QVector<Record*> byProject;
+
+    for(int i = 0; i < byCostCenter.count(); i++){
+        if(byCostCenter.at(i)->project() == project){
+            byProject.append(byCostCenter.at(i));
+        }
+    }
+
+    return byProject;
+
+}
+
 QVector<Record*> Diary::getRecordsByDate(const QDate& date){
     QVector<Record*> byDate;
 
