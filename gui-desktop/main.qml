@@ -273,8 +273,12 @@ ApplicationWindow {
         function onS_timerPassed(){
             _root.show();
         }
+    }
 
-        function onRequestNotification(m_title, m_content, m_important, m_critical){
+    Connections {
+        target: Notifier
+
+        function onFireNotification(m_title, m_content, m_important, m_critical){
             _notification.notificationTitle = m_title
             _notification.notificationContent = m_content
             _notification.notificationImportant = m_important
@@ -282,7 +286,6 @@ ApplicationWindow {
             _notification.open();
         }
     }
-
     Popup {
         id: _notification
 
@@ -318,6 +321,7 @@ ApplicationWindow {
             }
         }
         closePolicy: Popup.CloseOnEscape | Popup.CloseOnPressOutside
+        onClosed: Notifier.notificationKilled()
     }
 
     AboutDialog {

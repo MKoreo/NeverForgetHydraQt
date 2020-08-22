@@ -14,7 +14,7 @@ BackEnd::BackEnd(QObject *parent, Settings *settings) :
     m_popupTimer->setTimer(m_settings->timer());
     m_popupTimer->start();
 
-    // Pass popuptimer singals to route it to qml
+    // Pass popuptimer signals to route it to qml
     connect(m_popupTimer,   &PopupTimer::timerPassed,           this, &BackEnd::s_timerPassed);
     connect(m_popupTimer,   &PopupTimer::minutePassed,          this, &BackEnd::s_minutePassed);
 
@@ -29,11 +29,11 @@ BackEnd::BackEnd(QObject *parent, Settings *settings) :
 
 void BackEnd::timerReset(){
     m_popupTimer->setTimer(m_settings->timer());
-    requestNotification("Timer Reset", "Timer has been reset to " + QString::number(m_settings->timer()) + " minutes", false, false);
+    Notifier::instance().requestNotification("Timer Reset", "Timer has been reset to " + QString::number(m_settings->timer()) + " minutes", false, false);
 }
 void BackEnd::timerChanged(){
     m_popupTimer->changeTimer(m_settings->timer());
-    requestNotification("Timer Changed", "Timer has been set to " + QString::number(m_settings->timer()) + " minutes, currently " + QString::number(m_popupTimer->minutesLeft()) + " minutes left.", false, false);
+    Notifier::instance().requestNotification("Timer Changed", "Timer has been set to " + QString::number(m_settings->timer()) + " minutes, currently " + QString::number(m_popupTimer->minutesLeft()) + " minutes left.", false, false);
 
 }
 
@@ -70,18 +70,18 @@ void BackEnd::newDiary(QString path){
 void BackEnd::loadDiary(){
     newDiary(m_path);
     Diary::instance().loadDiary(m_path);
-    requestNotification("Diary Loaded", "Succesfully loaded diary: " + m_path, true, false);
+    Notifier::instance().requestNotification("Diary succesfully loaded", "Location: " + m_path +"\nNumber of records: " + QString::number(Diary::instance().count()), true, false);
 }
 
 void BackEnd::saveDiary(){
     Diary::instance().saveDiary(m_path);
-    requestNotification("Diary Saved", "Succesfully saved diary: " + m_path, true, false);
+    Notifier::instance().requestNotification("Diary Saved", "Succesfully saved diary: " + m_path, true, false);
 }
 
 void BackEnd::openHydra() const{
     // TODO: Change url to realy HYDRA Url
     QDesktopServices::openUrl(QUrl("/home", QUrl::TolerantMode));
-    requestNotification("Never Forget Hydra opened", "Please check your webbrowser.", true, false);
+    Notifier::instance().requestNotification("Never Forget Hydra opened", "Please check your webbrowser.", true, false);
 }
 
 // ---- Methods
@@ -90,9 +90,9 @@ void BackEnd::addRecord(){
     if (Record::validateParameters(params)){
         Diary::instance().addRecord(new Record(QDate::currentDate().toString("yyyy-MM-dd"), m_date, m_costCenter, m_project, m_subject, m_minutes));
         Diary::instance().saveDiary(m_path);
-        emit requestNotification("SUCCESS", "Record has been added to the Diary.", false, false);
+        Notifier::instance().requestNotification("SUCCESS", "Record has been added to the Diary.", false, false);
     } else {
-        emit requestNotification("FAILED", "One of the required fields is incorrect/empty. Please check.", false, true);
+        Notifier::instance().requestNotification("FAILED", "One of the required fields is incorrect/empty. Please check.", false, true);
     }
 }
 

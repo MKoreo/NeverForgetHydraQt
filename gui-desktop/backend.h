@@ -10,6 +10,7 @@
 #include "comboBoxNamesModel.h"
 #include "settings.h"
 #include "popuptimer.h"
+#include "notifier.h"
 
 // Open Url
 #include <QDesktopServices>
@@ -55,7 +56,6 @@ signals:    // Signals back to the GUI to update something
     void projectChanged();
     void subjectChanged();
     void minutesChanged();
-    void requestNotification(QString m_title, QString m_content, bool m_important, bool m_critical) const;
 
     void s_timerPassed();
     void s_minutePassed(QString minutesLeft);

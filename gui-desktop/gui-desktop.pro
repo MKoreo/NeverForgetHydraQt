@@ -19,6 +19,7 @@ SOURCES += \
         comboBoxNamesModel.cpp \
         datagridViewModel.cpp \
         main.cpp \
+        notifier.cpp \
         settings.cpp
 
 RESOURCES += \
@@ -36,6 +37,7 @@ HEADERS += \
     backend.h \
     comboBoxNamesModel.h \
     datagridViewModel.h \
+    notifier.h \
     settings.h
 
 

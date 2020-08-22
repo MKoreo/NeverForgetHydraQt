@@ -10,6 +10,7 @@
 #include "datagridViewModel.h"
 #include "comboBoxNamesModel.h"
 #include "settings.h"
+#include "notifier.h"
 
 int main(int argc, char *argv[]) {
     // Force a certain style, instead of qtquickcontrols2.conf
@@ -51,7 +52,7 @@ int main(int argc, char *argv[]) {
     BackEnd backend(nullptr, &settings);
     engine.rootContext()->setContextProperty("BackEnd", &backend);
 
-
+    engine.rootContext()->setContextProperty("Notifier", &Notifier::instance());
 
 
     // Load QML app engine
