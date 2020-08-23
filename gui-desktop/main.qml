@@ -15,6 +15,9 @@ ApplicationWindow {
     minimumHeight: 450
     minimumWidth: 1000
 
+    Material.accent :(Settings.colour == 0 ? Material.Red : (Settings.colour == 1 ? Material.Green : Material.Blue))
+    Material.theme :(Settings.theme == 0 ? Material.Light : Material.Dark)
+
     Connections {
         target: Settings
 
@@ -23,7 +26,7 @@ ApplicationWindow {
         }
 
         function onS_colourChanged(){
-            _root.Material.accent = (Settings.colour == 0 ? Material.Red : (Settings.colour == 1 ? Material.Blue : Material.Green));
+            _root.Material.accent = (Settings.colour == 0 ? Material.Red : (Settings.colour == 1 ? Material.Green : Material.Blue));
         }
     }
 
@@ -112,6 +115,7 @@ ApplicationWindow {
 
 
         Toolbar {
+            id: _tools
             // The Component
             z: 100
         }
@@ -216,7 +220,7 @@ ApplicationWindow {
 
                                     width: listView.headerItem.itemAt(column).width
                                     Rectangle {
-                                        color: "silver"
+                                        color: Material.accent
                                         width: 1
                                         height: parent.height
                                     }
@@ -224,14 +228,14 @@ ApplicationWindow {
 
                             }
                             Rectangle {
-                                color: "silver"
+                                color: Material.accent
                                 width: 1
                                 height: parent.height
                             }
 
                         }
                         Rectangle {
-                            color: "silver"
+                            color: Material.accent
                             width: _arow.width
                             height: 1
                         }
@@ -271,12 +275,16 @@ ApplicationWindow {
         }
 
         function onS_timerPassed(){
-            _root.show();
+            _root.show()
+            _root.raise()
+            _root.requestActivate()
+            _tray.showMessage("Timer expired!", "Please fill in your past work!")
         }
     }
 
     Connections {
         target: Notifier
+
 
         function onFireNotification(m_title, m_content, m_important, m_critical){
             _notification.notificationTitle = m_title
@@ -284,6 +292,7 @@ ApplicationWindow {
             _notification.notificationImportant = m_important
             _notification.notificationCritical = m_critical
             _notification.open();
+
         }
     }
     Popup {

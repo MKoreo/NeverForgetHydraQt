@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include "stcore.h"
+#include "notifier.h"
 
 enum ThemeSetting {
     Light = 0,
@@ -81,6 +82,14 @@ signals:
     // No signal for:
     // minimizeOnAdd -> Setting directly used
     // sendStackTrace -> Setting directly used
+
+private slots:
+    void timerReset();
+    void timerChanged();
+    void filterDropdownChanged();
+    void filterTypeChanged();
+    void historyTicksChanged();
+    void startWithOsChanged();
 
 private:
     int m_timer;

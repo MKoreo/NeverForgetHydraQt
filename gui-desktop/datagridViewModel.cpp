@@ -62,10 +62,10 @@ QVariant DatagridViewModel::get(const int row, const int column) const
         case 5: return QVariant(m_currentDateRecords[row]->minutes());
             break;
         default:
-            return QVariant();
+            return QVariant("");
         }
     } else {
-        return QVariant();
+        return QVariant("");
     }
 }
 

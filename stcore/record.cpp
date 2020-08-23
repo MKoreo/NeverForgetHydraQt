@@ -94,7 +94,7 @@ EqualityGrade Record::compare(const Record& rec) {
     return grade;
 }
 
-bool Record::validateParameters(const QString *params){
+bool Record::validateParameters(const QString params[]){
     // Determines if the parameters to create a record are correct
     // TODO: Improve validation
 

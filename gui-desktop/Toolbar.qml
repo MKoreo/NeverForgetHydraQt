@@ -128,10 +128,11 @@ Rectangle {
             }
 
             onCurrentIndexChanged: {
-                _cbProjectModel.setCurrentCostCenter(_cbCostCenter.displayText);
-                _cbSubjectModel.setCurrentCostCenter(_cbCostCenter.displayText);
+                _cbProjectModel.setCurrentCostCenter(_cbCostCenter.textAt(currentIndex));
+                _cbSubjectModel.setCurrentCostCenter(_cbCostCenter.textAt(currentIndex));
                 _cbProjectModel.renew();
                 _cbSubjectModel.renew();
+
             }
 
             onActiveFocusChanged: {
@@ -148,12 +149,14 @@ Rectangle {
                     // Handle new text
                     if(editText != "" && editText != currentText){
                         oldText = editText;
-                        _cbCostCenterModel.renew();
+                        _cbCostCenterModel.insert(editText)
+                        //_cbCostCenterModel.renew();
                         _cbCostCenter.currentIndex = _cbCostCenter.find(oldText);
-                        oldText = "";
                     }
                 }
             }
+
+            Component.onCompleted: _cbCostCenterModel.renew();
 
 
 
@@ -189,13 +192,14 @@ Rectangle {
             }
 
             onCurrentIndexChanged: {
-                _cbSubjectModel.setCurrentProject(_cbProject.displayText);
+                _cbSubjectModel.setCurrentProject(_cbProject.textAt(currentIndex));
                 _cbSubjectModel.renew();
             }
 
             onActiveFocusChanged: {
-                // When we first gain focus, save the old text and select everything for clearing.
+
                 if (activeFocus) {
+                    // When we first gain focus, save the old text and select everything for clearing.
                     oldText = editText
                     selectAll()
                 } else if (cancelling) {
@@ -204,16 +208,17 @@ Rectangle {
                     oldText = ""
                     cancelling = false
                 } else {
-                    // Handle new text
+                    // Handle new text: Check if exsists, if not add
                     if(editText != "" && editText != currentText){
                         oldText = editText;
-
-                        _cbProjectModel.renew();
+                        _cbProjectModel.insert(editText)
+                        //_cbProjectModel.renew();
                         _cbProject.currentIndex = _cbProject.find(oldText)
-                        oldText = "";
                     }
                 }
             }
+
+            Component.onCompleted: _cbProjectModel.renew();
         }
 
         ComboBox {
@@ -259,12 +264,14 @@ Rectangle {
                     // Handle new text
                     if(editText != "" && editText != currentText){
                         oldText = editText;
-                        _cbSubjectModel.renew();
+                        _cbSubjectModel.insert(oldText)
+                        //_cbSubjectModel.renew();
                         _cbSubject.currentIndex = _cbSubject.find(oldText)
-                        oldText = "";
                     }
                 }
             }
+
+            Component.onCompleted: _cbSubjectModel.renew();
         }
 
         Button{

@@ -91,6 +91,7 @@ public slots:
 
     // Retreive settings to parse to qml objects
     Q_INVOKABLE Settings* settings();
+
 private:
     // Validate if contents of m_ vars needed to create record are valid
     bool validateMembers() const;

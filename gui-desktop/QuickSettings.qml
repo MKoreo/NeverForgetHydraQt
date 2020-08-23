@@ -246,7 +246,8 @@ ScrollView {
                         model: ["Red", "Green", "Blue"]
 
                         currentIndex: Settings.colour
-                        onCurrentTextChanged: {
+
+                        onCurrentIndexChanged: {
                             Settings.colour = currentIndex
                         }
                     }

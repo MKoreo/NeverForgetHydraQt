@@ -1,11 +1,11 @@
 import QtQuick 2.2
-import QtQuick.Dialogs 1.2
+import QtQuick.Dialogs 1.3
 
 FileDialog {
     id: _newFileDialog
     title: "Please choose a file"
     folder: shortcuts.home
-    selectExisting: true
+    selectExisting: false
     selectMultiple: false
     selectFolder: false
     nameFilters: [ "XML files (*.xml)", "All files (*)" ]

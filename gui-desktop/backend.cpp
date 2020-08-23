@@ -96,17 +96,6 @@ void BackEnd::addRecord(){
     }
 }
 
-bool BackEnd::validateMembers() const{
-    // Determines if the parameters to create a record are correct
-    // TODO: Improve validation
-    if(m_date.count() != 10 || m_date[4] != "-" || m_date[7] != "-"){
-        return false;
-    } else if(m_costCenter != "" && m_project != "" && m_subject != "" && m_minutes != ""){
-        return true;
-    }
-    return false;
-}
-
 void BackEnd::setCurrentDate(){
     // Set m_date to current date in yyyy-MM-dd format
     setDate(QDate::currentDate().toString("yyyy-MM-dd"));

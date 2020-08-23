@@ -1,7 +1,6 @@
 #include "settings.h"
 #include <QDebug>
 #include <QFile>
-
 Settings::Settings(QObject *parent) : QObject(parent)
 {
     // Attempt to load settings.ini
@@ -25,6 +24,17 @@ Settings::Settings(QObject *parent) : QObject(parent)
 
         writeSettings();
     }
+
+    // Connect signals from setting that can change
+    connect(this,     &Settings::s_timerChanged,          this, &Settings::timerChanged);
+    connect(this,     &Settings::s_timerReset,            this, &Settings::timerReset);
+    connect(this,     &Settings::s_filterTypeChanged,     this, &Settings::filterTypeChanged);
+    connect(this,     &Settings::s_filterDropdownChanged, this, &Settings::filterDropdownChanged);
+    connect(this,     &Settings::s_historyTicksChanged,   this, &Settings::historyTicksChanged);
+    connect(this,     &Settings::s_startWithOsChanged,    this, &Settings::startWithOsChanged);
+
+    //emit s_themeChanged();
+    //emit s_colourChanged();
 }
 
 Settings::~Settings(){
@@ -130,6 +140,7 @@ int Settings::colour() const{
 int Settings::theme() const{
     return m_theme;
 }
+
 // Setters
 void Settings::setTimer(const int timer){
     qDebug() << "setTimer value from " <<  QString::number(m_timer) << " to " << QString::number(timer);
@@ -185,4 +196,26 @@ void Settings::setTheme(int& theme){
 void Settings::setColour(int& colour){
     m_colour = (ColourSetting)colour;
     emit s_colourChanged();
+}
+
+// slots
+void Settings::timerReset(){
+    Notifier::instance().requestNotification("Timer Reset", "Timer has been reset to minutes", false, false);
+}
+void Settings::timerChanged(){
+    Notifier::instance().requestNotification("Timer Changed", "Timer has been set to minutes, currently minutes left.", false, false);
+}
+
+void Settings::filterDropdownChanged(){
+
+}
+void Settings::filterTypeChanged(){
+
+}
+void Settings::historyTicksChanged(){
+
+}
+
+void Settings::startWithOsChanged(){
+
 }
