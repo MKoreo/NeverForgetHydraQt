@@ -21,7 +21,7 @@ void PopupTimer::changeTimer(const int minutes){
 void PopupTimer::start(){
     // Time one minute
     if (m_minutesLeft > 0){
-        m_timer.start(sToMs(1), this);
+        m_timer.start(sToMs(60), this);
     }
 }
 

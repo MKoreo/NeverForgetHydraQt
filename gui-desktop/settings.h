@@ -4,6 +4,7 @@
 #include <QObject>
 #include "stcore.h"
 #include "notifier.h"
+#include "systemfunct.h"
 
 enum ThemeSetting {
     Light = 0,

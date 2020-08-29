@@ -200,10 +200,9 @@ void Settings::setColour(int& colour){
 
 // slots
 void Settings::timerReset(){
-    Notifier::instance().requestNotification("Timer Reset", "Timer has been reset to minutes", false, false);
+
 }
 void Settings::timerChanged(){
-    Notifier::instance().requestNotification("Timer Changed", "Timer has been set to minutes, currently minutes left.", false, false);
 }
 
 void Settings::filterDropdownChanged(){
@@ -217,5 +216,9 @@ void Settings::historyTicksChanged(){
 }
 
 void Settings::startWithOsChanged(){
-
+    if(m_startWithOs){
+        SystemFunct::instance().enableStartup();
+    } else {
+        SystemFunct::instance().disableStartup();
+    }
 }

@@ -6,6 +6,7 @@ Diary& Diary::instance()
     // Singleton declared in static memory
     // Will be same instance, everytime method is called
     static Diary singleton;
+
     return singleton;
 }
 

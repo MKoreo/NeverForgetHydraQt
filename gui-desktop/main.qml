@@ -15,8 +15,8 @@ ApplicationWindow {
     minimumHeight: 450
     minimumWidth: 1000
 
-    Material.accent :(Settings.colour == 0 ? Material.Red : (Settings.colour == 1 ? Material.Green : Material.Blue))
-    Material.theme :(Settings.theme == 0 ? Material.Light : Material.Dark)
+    Material.accent:(Settings.colour == 0 ? Material.Red : (Settings.colour == 1 ? Material.Green : Material.Blue))
+    Material.theme:(Settings.theme == 0 ? Material.Light : Material.Dark)
 
     Connections {
         target: Settings
@@ -70,14 +70,14 @@ ApplicationWindow {
 
         Menu {
             title: qsTr("&Preferences");
-            Action { text: qsTr("Settings");    onTriggered: _quickSettings.open()}
+            Action { text: qsTr("&Settings");    onTriggered: _quickSettings.open()}
             //Action { text: qsTr("Theme");       onTriggered: _root.Material.theme = (_root.Material.theme == Material.Light ? Material.Dark : Material.Light)}
         }
 
         Menu {
             title: qsTr("&View");
-            Action { text: qsTr("Records");     onTriggered:{_workSpace.currentIndex = 0}}
-            Action { text: qsTr("Statistics");  onTriggered:{ _workSpace.currentIndex = 1}}
+            Action { text: qsTr("&Records");     onTriggered:{_workSpace.currentIndex = 0}}
+            Action { text: qsTr("&Statistics");  onTriggered:{ _workSpace.currentIndex = 1}}
         }
 
         Menu {
@@ -168,9 +168,9 @@ ApplicationWindow {
                         function itemAt(index) { return repeater.itemAt(index) }
                         Repeater {
                             id: repeater
-                            model: ["Record Date", "Add Date", "Cost Center", "Project", "Subject", "Minutes"]
+                            model: ["Cost Center", "Project", "Subject", "Minutes"]
                             Rectangle {
-                                implicitWidth: (listView.width/6) -5
+                                implicitWidth: (listView.width/4) -5
                                 implicitHeight: _text.height
 
                                 color: Material.accent
@@ -204,14 +204,17 @@ ApplicationWindow {
                             id: _arow
                             spacing: 0
                             Repeater {
-                                model: 6
+                                model: 4
 
                                 ItemDelegate {
                                     property int column: index
+                                    clip: true
 
                                     Text {
+                                        padding: 5
                                         anchors.fill: parent
                                         text: _dataGridViewModel.get(delegate.row, column)
+                                        elide: Text.ElideRight
                                         color: Material.foreground
                                         verticalAlignment: Text.AlignVCenter
                                         horizontalAlignment: Text.AlignHCenter
@@ -221,7 +224,7 @@ ApplicationWindow {
                                     width: listView.headerItem.itemAt(column).width
                                     Rectangle {
                                         color: Material.accent
-                                        width: 1
+                                        width: index > 0 ? 0 : 0
                                         height: parent.height
                                     }
                                 }
@@ -229,7 +232,7 @@ ApplicationWindow {
                             }
                             Rectangle {
                                 color: Material.accent
-                                width: 1
+                                width: 0
                                 height: parent.height
                             }
 
@@ -237,11 +240,11 @@ ApplicationWindow {
                         Rectangle {
                             color: Material.accent
                             width: _arow.width
-                            height: 1
+                            height: 0
                         }
                     }
 
-                    ScrollIndicator.horizontal: ScrollIndicator { }
+                    //ScrollIndicator.horizontal: ScrollIndicator { }
                     ScrollIndicator.vertical: ScrollIndicator { }
                 }
 
@@ -360,7 +363,7 @@ ApplicationWindow {
         icon.source: "qrc:/images/hourglas.png"
 
         menu: Labs.Menu {
-
+            visible: false
             Labs.MenuItem {
                 text: qsTr("Show")
                 onTriggered: {

@@ -27,17 +27,17 @@ QVariant DatagridViewModel::data(const QModelIndex &index, int role) const
     else {
         if(role == recordRole){
             switch(index.column()){
-            case 0: return QVariant(m_currentDateRecords[index.row()]->creationDate().toString("yyyy-MM-dd"));
+            case 10: return QVariant(m_currentDateRecords[index.row()]->creationDate().toString("yyyy-MM-dd"));
                 break;
-            case 1: return QVariant(m_currentDateRecords[index.row()]->recordDate().toString("yyyy-MM-dd"));
+            case 11: return QVariant(m_currentDateRecords[index.row()]->recordDate().toString("yyyy-MM-dd"));
                 break;
-            case 2: return QVariant(m_currentDateRecords[index.row()]->costCenter());
+            case 0: return QVariant(m_currentDateRecords[index.row()]->costCenter());
                 break;
-            case 3: return QVariant(m_currentDateRecords[index.row()]->project());
+            case 1: return QVariant(m_currentDateRecords[index.row()]->project());
                 break;
-            case 4: return QVariant(m_currentDateRecords[index.row()]->subject());
+            case 2: return QVariant(m_currentDateRecords[index.row()]->subject());
                 break;
-            case 5: return QVariant(m_currentDateRecords[index.row()]->minutes());
+            case 3: return QVariant(m_currentDateRecords[index.row()]->minutes());
                 break;
             }
         }
@@ -49,17 +49,17 @@ QVariant DatagridViewModel::get(const int row, const int column) const
 {
     if (row != -1) {
         switch(column){
-        case 0: return QVariant(m_currentDateRecords[row]->creationDate().toString("yyyy-MM-dd"));
+        case 10: return QVariant(m_currentDateRecords[row]->creationDate().toString("yyyy-MM-dd"));
             break;
-        case 1: return QVariant(m_currentDateRecords[row]->recordDate().toString("yyyy-MM-dd"));
+        case 11: return QVariant(m_currentDateRecords[row]->recordDate().toString("yyyy-MM-dd"));
             break;
-        case 2: return QVariant(m_currentDateRecords[row]->costCenter());
+        case 0: return QVariant(m_currentDateRecords[row]->costCenter());
             break;
-        case 3: return QVariant(m_currentDateRecords[row]->project());
+        case 1: return QVariant(m_currentDateRecords[row]->project());
             break;
-        case 4: return QVariant(m_currentDateRecords[row]->subject());
+        case 2: return QVariant(m_currentDateRecords[row]->subject());
             break;
-        case 5: return QVariant(m_currentDateRecords[row]->minutes());
+        case 3: return QVariant(m_currentDateRecords[row]->minutes());
             break;
         default:
             return QVariant("");

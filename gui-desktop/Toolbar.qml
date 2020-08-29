@@ -20,6 +20,13 @@ Rectangle {
         anchors.fill: parent
 
         TextField{
+            // Help
+            ToolTip.delay: 500
+            ToolTip.timeout: 5000
+            ToolTip.visible: hovered
+            hoverEnabled: true
+            ToolTip.text: qsTr("Fill in/scroll for a date to view its records/add records to.")
+
             Material.foreground: Material.background
             id: _tfDate
             Layout.margins: edgeMargin
@@ -84,6 +91,9 @@ Rectangle {
 
             onActiveFocusChanged: if(state == "unfolded") { state = "folded";  BackEnd.date = text; text = BackEnd.date.substring(5,10); _dataGridViewModel.refresh(BackEnd.date);} else { state = "unfolded"; text = BackEnd.date}
 
+            onHoveredChanged: {
+
+            }
 
         }
 
@@ -100,6 +110,13 @@ Rectangle {
 
         ComboBox {
             id: _cbCostCenter
+
+            // Help
+            ToolTip.delay: 500
+            ToolTip.timeout: 5000
+            ToolTip.visible: hovered
+            hoverEnabled: true
+            ToolTip.text: qsTr("Fill in/select a costcenter for the record.")
 
             // Looks
             Material.foreground: Material.background
@@ -165,6 +182,13 @@ Rectangle {
         ComboBox {
             id: _cbProject
 
+            // Help
+            ToolTip.delay: 500
+            ToolTip.timeout: 5000
+            ToolTip.visible: hovered
+            hoverEnabled: true
+            ToolTip.text: qsTr("Fill in/select a project for the record.")
+
             // Looks
             Material.foreground: Material.background
             font.bold: true
@@ -223,6 +247,13 @@ Rectangle {
 
         ComboBox {
             id: _cbSubject
+
+            // Help
+            ToolTip.delay: 500
+            ToolTip.timeout: 5000
+            ToolTip.visible: hovered
+            hoverEnabled: true
+            ToolTip.text: qsTr("Fill in/select a subject for the record.")
 
             // Looks
             Material.foreground: Material.background
@@ -292,6 +323,13 @@ Rectangle {
                 BackEnd.addRecord();
                 _dataGridViewModel.refresh(BackEnd.date);
             }
+
+            ToolTip.delay: 500
+            ToolTip.timeout: 5000
+            ToolTip.visible: hovered
+            hoverEnabled: true
+            ToolTip.text: qsTr("Click to add a record")
+
         }
     }
 }

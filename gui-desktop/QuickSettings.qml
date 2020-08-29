@@ -180,7 +180,7 @@ ScrollView {
                     Layout.fillWidth: true
                     Layout.leftMargin: -5
 
-                    checked: Settings.startWithOs
+                    Component.onCompleted: checked = Settings.startWithOs
                     onCheckedChanged: Settings.startWithOs = checked
                 }
 
@@ -231,11 +231,11 @@ ScrollView {
 
                         currentIndex: Settings.theme
 
-                        onCurrentIndexChanged: {
+                        Component.onCompleted: currentIndex = Settings.theme
+
+                        onEditTextChanged: {
                             Settings.theme = currentIndex
                         }
-
-                        Component.onCompleted: Settings.theme = currentIndex
                     }
 
                     ComboBox {
@@ -245,9 +245,9 @@ ScrollView {
 
                         model: ["Red", "Green", "Blue"]
 
-                        currentIndex: Settings.colour
+                        Component.onCompleted: currentIndex = Settings.colour
 
-                        onCurrentIndexChanged: {
+                        onEditTextChanged: {
                             Settings.colour = currentIndex
                         }
                     }
