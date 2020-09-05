@@ -150,7 +150,7 @@ ApplicationWindow {
             Layout.fillWidth: true
             currentIndex: 0
             orientation: Qt.Horizontal
-            interactive: false
+            interactive: true
 
 
             Item {
@@ -257,113 +257,141 @@ ApplicationWindow {
             Item {
                 id: _statistics
 
-                Connections {
-                    target: BackEnd
-                }
-
-                ColumnLayout {
+                Flickable{
+                    id: _ChartFlick
                     anchors.fill: parent
 
-                    RowLayout {
-                        Layout.preferredHeight: 50
-                        Layout.minimumHeight: 50
-                        Layout.maximumHeight: 50
+                    contentHeight: _something.height
+                    contentWidth: width
 
-                        ComboBox {
-                            enabled: true
-                            editable: false
-                            Layout.preferredWidth: 350
+                    ScrollIndicator.vertical: ScrollIndicator { }
 
-                            model: ["Cost center based", "Project based"]
+                    ColumnLayout {
+                        id: _something
+                        //anchors.fill: parent
+                        anchors.left: parent.left
+                        anchors.right: parent.right
 
-                            currentIndex: Settings.theme
+                        RowLayout {
+                            Layout.preferredHeight: 50
+                            Layout.minimumHeight: 50
+                            Layout.maximumHeight: 50
+                            Layout.fillWidth: true
 
-                            Component.onCompleted: currentIndex = Settings.theme
+                            ComboBox {
+                                enabled: true
+                                editable: false
+                                Layout.preferredWidth: 350
 
-                            onEditTextChanged: {
-                                Settings.theme = currentIndex
-                            }
-                        }
+                                model: ["Cost center based", "Project based"]
 
-                        Label {
-                            id: _sliderValue
-                            height: 40
+                                currentIndex: Settings.theme
 
-                            text: "One Week"
-                            Layout.minimumWidth: 100
-                            horizontalAlignment: Text.AlignHCenter
-                        }
+                                Component.onCompleted: currentIndex = Settings.theme
 
-                        Slider{
-                            from: 0
-                            stepSize: 1
-                            value: 1
-                            to: 4
-                            height: 40
-                            width: 350
-                            snapMode: Slider.SnapAlways
-                            onValueChanged: {
-                                switch(value){
-                                    case 0: _sliderValue.text = "One day";
-                                    break;
-                                    case 1: _sliderValue.text = "One Week";
-                                    break;
-                                    case 2: _sliderValue.text = "One Month";
-                                    break;
-                                    case 3: _sliderValue.text = "One Year";
-                                    break;
-                                    case 4: _sliderValue.text = "One eternity";
-                                    break;
+                                onEditTextChanged: {
+                                    Settings.theme = currentIndex
                                 }
-                                ChartModel.history = value;
+                            }
+
+                            Label {
+                                id: _sliderValue
+                                height: 40
+
+                                text: "One Week"
+                                Layout.minimumWidth: 100
+                                horizontalAlignment: Text.AlignHCenter
+                            }
+
+                            Slider{
+                                Layout.fillWidth: true
+                                from: 0
+                                stepSize: 1
+                                value: 1
+                                to: 4
+                                height: 40
+                                //width: 350
+                                snapMode: Slider.SnapAlways
+                                onValueChanged: {
+                                    switch(value){
+                                    case 0: _sliderValue.text = "One day";
+                                        break;
+                                    case 1: _sliderValue.text = "One Week";
+                                        break;
+                                    case 2: _sliderValue.text = "One Month";
+                                        break;
+                                    case 3: _sliderValue.text = "One Year";
+                                        break;
+                                    case 4: _sliderValue.text = "One eternity";
+                                        break;
+                                    }
+                                    ChartModel.history = value;
+                                }
+                            }
+
+
+                        }
+
+                        Connections {
+                            target: ChartModel
+
+                            function onChartChanged(){
+                                categoriesAxis.categories = ChartModel.categories
+                                timeSet.values = ChartModel.values
+                                valueAxis.max = ChartModel.max
                             }
                         }
 
+                        ChartView {
+                            Layout.minimumHeight: Math.round(categoriesAxis.count * 45) + 150
+                            Layout.fillWidth: true
 
-                    }
+                            id: _chart
 
-                    Connections {
-                        target: ChartModel
+                            backgroundColor: Material.background
 
-                        function onChartChanged(){
-                            categoriesAxis.categories = ChartModel.categories
-                            timeSet.values = ChartModel.values
+                            legend.visible: false
 
-                        }
-                    }
+                            margins.top: 0
+                            margins.bottom: 0
+                            margins.left: 15
+                            margins.right: 15
 
-                    ChartView {
-                        margins.left: 50
-                        theme: ChartView.ChartThemeHighContrast
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        id: _chart
-                        title: "Diary statistics"
-                        legend.alignment: Qt.AlignBottom
-                        antialiasing: true
-                        dropShadowEnabled: false
+                            animationOptions: ChartView.SeriesAnimations
+                            antialiasing: true
 
+                            BarCategoryAxis {
+                                id: categoriesAxis
+                                color: Material.accent
+                                labelsColor: Material.foreground
+                            }
 
-                        BarCategoryAxis {
-                            id: categoriesAxis
-                            //titleText: "costCenter"
-                        }
+                            ValueAxis{
+                                id: valueAxis
+                                min: 0
+                                max: 100
+                                tickCount: 0
+                                titleText: "Percentage [%]"
+                                color: Material.secondaryTextColor
+                                labelsColor: Material.secondaryTextColor
+                            }
 
-                        ValueAxis{
-                            id: valueAxis
-                            min: 0
-                            max: 100
-                            titleText: "Percentage [%]"
-                        }
+                            HorizontalBarSeries {
+                                id: myBarSeries
+                                axisX: valueAxis
+                                axisY: categoriesAxis
+                                labelsVisible: true
 
-                        HorizontalBarSeries {
-                            id: myBarSeries
-                            axisX: valueAxis
-                            axisY: categoriesAxis
-                            BarSet { color: Material.accent; id: timeSet; label: "Time";}
+                                BarSet { color: Material.accent; id: timeSet; label: "Time";}
+                            }
                         }
                     }
                 }
+
+
+
+
+
 
 
             }

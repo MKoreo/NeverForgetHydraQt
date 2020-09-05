@@ -35,7 +35,12 @@ bool Diary::saveDiary(const QString &path){
 }
 
 void Diary::addRecord(Record* rec) {
-    m_records.append(std::move(rec));
+    Record* existing = contains(rec, EqualityGrade::subject);
+    if(existing != nullptr){
+        existing->addMinutes(rec->minutes());
+    } else {
+        m_records.append(std::move(rec));
+    }
 }
 
 bool Diary::removeRecord(const Record* rec){
@@ -121,9 +126,9 @@ void Diary::sort(){
     }
 }
 
-Record* Diary::contains(const Record* rec) const {
-    for(int i = 0; i < m_records.count() - 1; i++){
-        if(m_records.at(i)->compare(*rec) == EqualityGrade::minutes){
+Record* Diary::contains(const Record* rec, EqualityGrade grade) const {
+    for(int i = 0; i < m_records.count(); i++){
+        if(m_records.at(i)->compare(*rec) >= grade){
             return m_records.at(i);
         }
     }

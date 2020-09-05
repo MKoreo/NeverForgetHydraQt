@@ -75,15 +75,15 @@ void Record::addMinutes(int minutes){
 EqualityGrade Record::compare(const Record& rec) {
     EqualityGrade grade = EqualityGrade::none;
 
-    if(recordDate() == rec.recordDate()){
+    if(m_recordDate == rec.recordDate()){
         grade = EqualityGrade::recordDate;
-        if(costCenter() == rec.costCenter()) {
+        if(m_costCenter == rec.costCenter()) {
             grade = EqualityGrade::costCenter;
-            if (project() == rec.project()){
+            if (m_project == rec.project()){
                 grade = EqualityGrade::project;
-                if(subject() == rec.subject()){
+                if(m_subject == rec.subject()){
                     grade = EqualityGrade::subject;
-                    if(minutes() == rec.minutes()){
+                    if(m_minutes == rec.minutes()){
                         grade = EqualityGrade::minutes;
                     }
                 }

@@ -8,6 +8,7 @@ BarChartModel::BarChartModel(QObject *parent) : QObject(parent)
 void BarChartModel::setHistory(int history){
     m_history = history;
     refreshRecords();
+    generateChart();
     emit chartChanged();
 }
 
@@ -30,24 +31,49 @@ void BarChartModel::refreshRecords(){
     m_currentDateRecords = Diary::instance().getRecordsByDates(from,QDate::currentDate());
 }
 
-QStringList BarChartModel::getCategories(){
+void BarChartModel::generateChart(){
+    QHash<QString, int> hash;
 
     for(Record* rec : m_currentDateRecords){
-
-        // If case to shorten category length
-        if(rec->costCenter().length() > 15){
-            m_categories.append(rec->costCenter().mid(0,12).append("..."));
+        QString current = rec->costCenter();
+        if(hash.contains(current)){
+            hash[current] = hash[current] + rec->minutes();
         } else {
-            m_categories.append(rec->costCenter());
+            hash.insert(current, rec->minutes());
         }
-
     }
+
+    QHash<QString, int>::const_iterator i;
+    int totalMinutes = 0;
+    for (i = hash.constBegin(); i != hash.constEnd(); ++i){
+        // If case to shorten category length
+        if(i.key().length() > 15){
+            m_categories.append(i.key().mid(0,12).append("..."));
+        } else {
+            m_categories.append(i.key());
+        }
+        m_values.append(i.value());
+        totalMinutes += i.value();
+    }
+    m_max = 0;
+
+    for(int i = 0; i < m_values.count(); i++){
+
+        m_values[i] = qRound((double)(m_values.at(i).toInt() / (double) totalMinutes) * 100);
+        if(m_values.at(i).toInt() > m_max) { m_max = m_values.at(i).toInt(); }
+    }
+
+    m_max += 5;
+}
+
+QStringList BarChartModel::getCategories(){
     return m_categories;
 }
 
 QVariantList BarChartModel::getValues(){
-    for(Record* rec : m_currentDateRecords){
-        m_values.append(rec->minutes());
-    }
     return m_values;
+}
+
+int BarChartModel::getMax(){
+    return m_max;
 }

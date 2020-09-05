@@ -33,7 +33,7 @@ public:
   void sort();
 
   // checking content
-  Record* contains(const Record* rec) const;
+  Record* contains(const Record* rec, EqualityGrade grade) const;
   QVector<Record*> getRecordsByCostCenter(const QString& costCenter);
   QVector<Record*> getRecordsByProject(const QString& costCenter, const QString& project);
   QVector<Record*> getRecordsByDate(const QDate& date);
@@ -47,6 +47,8 @@ private:
   QString m_path;
   QVector<Record*> m_records;
   QVector<Record*> m_deletedRecords;
+
+
 
 };
 
