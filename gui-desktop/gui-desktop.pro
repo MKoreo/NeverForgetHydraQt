@@ -1,5 +1,6 @@
 TARGET = NeverForgetHydraQt
-QT += widgets quick qml quickcontrols2
+QT += widgets charts quick qml quickcontrols2
+
 
 CONFIG += c++17
 
@@ -16,6 +17,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         backend.cpp \
+        barchartmodel.cpp \
         comboBoxNamesModel.cpp \
         datagridViewModel.cpp \
         main.cpp \
@@ -35,6 +37,7 @@ QML_DESIGNER_IMPORT_PATH =
 
 HEADERS += \
     backend.h \
+    barchartmodel.h \
     comboBoxNamesModel.h \
     datagridViewModel.h \
     notifier.h \

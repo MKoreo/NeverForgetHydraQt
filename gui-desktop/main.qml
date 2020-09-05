@@ -5,6 +5,7 @@ import home.NeverForgetHydra 1.0 as NFH
 import QtQuick.Controls.Material 2.12
 import "qrc:///dialogs"
 import Qt.labs.platform 1.1 as Labs
+import QtCharts 2.15
 
 ApplicationWindow {
     id: _root
@@ -255,14 +256,116 @@ ApplicationWindow {
 
             Item {
                 id: _statistics
-                Rectangle {
+
+                Connections {
+                    target: BackEnd
+                }
+
+                ColumnLayout {
                     anchors.fill: parent
-                    color: Material.buttonDisabledColor
-                    Button {
-                        anchors.fill: parent
-                        //onClicked:
+
+                    RowLayout {
+                        Layout.preferredHeight: 50
+                        Layout.minimumHeight: 50
+                        Layout.maximumHeight: 50
+
+                        ComboBox {
+                            enabled: true
+                            editable: false
+                            Layout.preferredWidth: 350
+
+                            model: ["Cost center based", "Project based"]
+
+                            currentIndex: Settings.theme
+
+                            Component.onCompleted: currentIndex = Settings.theme
+
+                            onEditTextChanged: {
+                                Settings.theme = currentIndex
+                            }
+                        }
+
+                        Label {
+                            id: _sliderValue
+                            height: 40
+
+                            text: "One Week"
+                            Layout.minimumWidth: 100
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+
+                        Slider{
+                            from: 0
+                            stepSize: 1
+                            value: 1
+                            to: 4
+                            height: 40
+                            width: 350
+                            snapMode: Slider.SnapAlways
+                            onValueChanged: {
+                                switch(value){
+                                    case 0: _sliderValue.text = "One day";
+                                    break;
+                                    case 1: _sliderValue.text = "One Week";
+                                    break;
+                                    case 2: _sliderValue.text = "One Month";
+                                    break;
+                                    case 3: _sliderValue.text = "One Year";
+                                    break;
+                                    case 4: _sliderValue.text = "One eternity";
+                                    break;
+                                }
+                                ChartModel.history = value;
+                            }
+                        }
+
+
+                    }
+
+                    Connections {
+                        target: ChartModel
+
+                        function onChartChanged(){
+                            categoriesAxis.categories = ChartModel.categories
+                            timeSet.values = ChartModel.values
+
+                        }
+                    }
+
+                    ChartView {
+                        margins.left: 50
+                        theme: ChartView.ChartThemeHighContrast
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        id: _chart
+                        title: "Diary statistics"
+                        legend.alignment: Qt.AlignBottom
+                        antialiasing: true
+                        dropShadowEnabled: false
+
+
+                        BarCategoryAxis {
+                            id: categoriesAxis
+                            //titleText: "costCenter"
+                        }
+
+                        ValueAxis{
+                            id: valueAxis
+                            min: 0
+                            max: 100
+                            titleText: "Percentage [%]"
+                        }
+
+                        HorizontalBarSeries {
+                            id: myBarSeries
+                            axisX: valueAxis
+                            axisY: categoriesAxis
+                            BarSet { color: Material.accent; id: timeSet; label: "Time";}
+                        }
                     }
                 }
+
+
             }
 
         }

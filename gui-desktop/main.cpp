@@ -11,6 +11,7 @@
 #include "comboBoxNamesModel.h"
 #include "settings.h"
 #include "notifier.h"
+#include "barchartmodel.h"
 
 int main(int argc, char *argv[]) {
     // Force a certain style, instead of qtquickcontrols2.conf
@@ -54,6 +55,8 @@ int main(int argc, char *argv[]) {
 
     engine.rootContext()->setContextProperty("Notifier", &Notifier::instance());
 
+    BarChartModel chartmodel;
+    engine.rootContext()->setContextProperty("ChartModel", &chartmodel);
 
     // Load QML app engine
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
